@@ -27,6 +27,7 @@
     "react-scripts": "5.0.1",
     "react-use": "^17.4.2",
     "read-more-react": "^1.0.10",
+    "replyke": "^2.0.19",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

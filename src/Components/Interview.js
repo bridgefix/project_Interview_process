@@ -1,21 +1,85 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import * as React from "react";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import { Link, useParams } from "react-router-dom";
+import axios from "axios";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from '@mui/icons-material/Edit';
 
-export default function Interview() {
-  const [rows, setRows] = useState([]);
+const columns = [
+  {
+    id: "interview_round",
+    label: "INTERVIEW_ROUND",
+    minWidth: 170,
+    style: {
+      fontSize: "medium",
+      fontWeight: "revert",
+    },
+  },
+
+  { id: "result", label: "RESULT", minWidth: 100 },
+  {
+    id: "actual_interviewee",
+    label: "ACTUAL_INTERVIEW",
+    minWidth: 170,
+    align: "right",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "interviewee",
+    label: "INTERVIEW",
+    minWidth: 170,
+    align: "right",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "technology",
+    label: "TECHNOLOGY",
+    minWidth: 170,
+    align: "right",
+    format: (value) => value.toFixed(2),
+  },
+  {
+    id: "interviewer",
+    label: "INTERVIEWER",
+    minWidth: 170,
+    align: "right",
+    format: (value) => value.toFixed(2),
+  },
+  {
+    id: "action",
+    label: "Action",
+    minWidth: 170,
+    align: "right",
+    format: (value) => value.toFixed(2),
+  },
+];
+
+export default function StickyHeadTable() {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(2);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const [rows, setRows] = React.useState([]);
   const { id } = useParams();
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchData = async () => {
       let response;
-      if (id == "id") {
+      if (id === "id") {
         response = await axios.get(
           "http://127.0.0.1:8000/api/interview_tracking/interview/"
         );
@@ -31,95 +95,95 @@ export default function Interview() {
   }, [id]);
 
   return (
-    <TableContainer
-      component={Paper}
+    <div
       style={{
-        marginTop: "30px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        marginLeft: "15px",
+        minHeight: "200px",
       }}
     >
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              Interview Round
-            </TableCell>
-            <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              Result
-            </TableCell>
-            {/* <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              feedback
-            </TableCell> */}
-            {/* <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              Remark
-            </TableCell> */}
-            <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              actual_interviewee
-            </TableCell>
-            <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              interviewee
-            </TableCell>
-            <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              Technology
-            </TableCell>
-            <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              Interviewer
-            </TableCell>
-            {/* <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              interview_mode
-            </TableCell> */}
-
-            <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              Date
-            </TableCell>
-            <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              sheduled_by
-            </TableCell>
-            {/* <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              created_at
-            </TableCell>
-            <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              updated_at
-            </TableCell> */}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, index) => (
-            <TableRow key={index}>
-              <TableCell>{row.interview_round}</TableCell>
-              <TableCell>{row.result}</TableCell>
-              {/* <TableCell>{row.feedback}</TableCell> */}
-              {/* <TableCell>{row.remark}</TableCell> */}
-              <TableCell>{row.actual_interviewee}</TableCell>
-              <TableCell>{row.interviewee}</TableCell>
-              <TableCell>{row.technology}</TableCell>
-              {/* <TableCell>{row.interviewer}</TableCell> */}
-              <TableCell>
-                {/* <Link
-                  to={`/interview/${row.index}/`}
-                  style={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                    display: "flex",
-                  }}
-                > */}
-                {row.interviewer}
-                {/* </Link> */}
-              </TableCell>
-              <TableCell>{row.sheduled_by}</TableCell>
-              {/* <TableCell>{row.interview_mode}</TableCell> */}
-              <TableCell>
-                {row.date ? row.date : <span>No date available</span>}
-              </TableCell>
-              {/* <TableCell>{row.created_at}</TableCell>
-              <TableCell>{row.updated_at}</TableCell> */}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+      <Paper
+        sx={{ width: "100%", overflow: "hidden" }}
+        className="container"
+        style={{ marginTop: "40px", marginLeft: "45px" }}
+      >
+        <TableContainer sx={{ maxHeight: 440 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{
+                      minWidth: column.minWidth,
+                      fontWeight: "bold",
+                      fontSize: "16px",
+                    }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => {
+                  return (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.code}
+                    >
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.id === "interview_round" ? (
+                              <Link
+                                to="/questions/id"
+                                style={{
+                                  color: "black",
+                                  textDecoration: "none",
+                                }}
+                              >
+                                {column.format && typeof value === "number"
+                                  ? column.format(value)
+                                  : value}
+                              </Link>
+                            ) : column.id === "action" ? (
+                              <>
+                                {value}
+                                <DeleteIcon  style={{color:"red"}}/>
+                                <EditIcon style={{color:"green"}}/>
+                              </>
+                            ) : column.format && typeof value === "number" ? (
+                              column.format(value)
+                            ) : (
+                              value
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[1, 2, 10]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </div>
   );
 }

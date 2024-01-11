@@ -1,67 +1,20 @@
 import * as React from "react";
-import PropTypes from "prop-types";
-import Box from "@mui/material/Box";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-// import Pagination from "@mui/material/Pagination";
-// import Stack from "@mui/material/Stack";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import PropTypes from "prop-types";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
-
-  return (
-    <React.Fragment>
-      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-        <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
-        <TableCell component="th" scope="row">
-          {row.question}
-        </TableCell>
-        {/* <TableCell>{row.answer}</TableCell> */}
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Table size="small" aria-label="answers">
-                <TableBody>
-                  <TableRow>
-                    <TableCell component="th" scope="row">
-                      <strong>Answer:</strong>
-                    </TableCell>
-                    <TableCell colSpan={3}>{row.answer}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </React.Fragment>
-  );
 }
 
 Row.propTypes = {
@@ -71,14 +24,47 @@ Row.propTypes = {
   }).isRequired,
 };
 
-export default function QuestionTable() {
+const columns = [
+  { id: "question", label: "QUESTIONS LIST", minWidth: 170 },
+  { id: "type", label: "TYPE", minWidth: 100 },
+  { id: "company", label: "COMPANY", minWidth: 100 },
+];
+
+function createData(id,question, type, company, answer) {
+  return {id, question, type, company, answer };
+}
+
+export default function StickyHeadTable() {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(4);
+  const [rows, setRows] = React.useState([]);
   const [questions, setQuestions] = React.useState([]);
   const { id } = useParams();
   const [companies, setCompanies] = React.useState([]);
   const [selectedCompany, setSelectedCompany] = React.useState("");
+  const [technologies, setTechnologies] = React.useState([]);
+  const [selectedTechnology, setSelectedTechnology] = React.useState(
+    id == "id" ? "" : id
+  );
+  console.log("id : ", id);
 
   const handleChangeCompany = (event) => {
     setSelectedCompany(event.target.value);
+  };
+
+  const fetchTechnologies = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/interview_tracking/technology/"
+      );
+      setTechnologies(response.data);
+    } catch (error) {
+      console.error("Error fetching technologies:", error);
+    }
+  };
+  const handleChangeTecchnology = (event) => {
+    setSelectedTechnology(event.target.value);
+    fetchData(selectedCompany, event.target.value);
   };
 
   const fetchCompanies = async () => {
@@ -95,24 +81,69 @@ export default function QuestionTable() {
   React.useEffect(() => {
     fetchData();
     fetchCompanies();
+    fetchTechnologies();
+    setSelectedTechnology(id == "id" ? "" : id);
   }, [id]);
 
   const fetchData = async () => {
     try {
       let response;
-      if (id === "id") {
+      if (selectedTechnology !== "") {
         response = await axios.get(
-          "http://127.0.0.1:8000/api/interview_tracking/question/"
+          `http://127.0.0.1:8000/api/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
         );
       } else {
         response = await axios.get(
-          `http://127.0.0.1:8000/api/interview_tracking/question/?technology_id=${id}`
+          `http://127.0.0.1:8000/api/interview_tracking/question/?company_id=${selectedCompany}`
         );
+      }
+
+      if (selectedCompany === null) {
+        if (id === "id") {
+          if (selectedTechnology === null) {
+            // ;
+            response = await axios.get(
+              "http://127.0.0.1:8000/api/interview_tracking/question/"
+            );
+          } else {
+            // ;
+            response = await axios.get(
+              `http://127.0.0.1:8000/api/interview_tracking/question/?technology_id=${selectedTechnology}`
+            );
+          }
+        } else {
+          if (selectedTechnology === null) {
+            // ;
+            response = await axios.get(
+              `http://127.0.0.1:8000/api/interview_tracking/question/?technology_id=${id}`
+            );
+          } else {
+            // ;
+            response = await axios.get(
+              `http://127.0.0.1:8000/api/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
+            );
+          }
+        }
+      } else {
+        if (selectedTechnology === null) {
+          // ;
+          response = await axios.get(
+            `http://127.0.0.1:8000/api/interview_tracking/question/?company_id=${selectedCompany}`
+          );
+        } else {
+          // ;
+          response = await axios.get(
+            `http://127.0.0.1:8000/api/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
+          );
+        }
       }
       setQuestions(
         response.data.map((item) => ({
+          id: item.id,
           question: item.title,
           answer: item.answer,
+          type: item.difficulty,
+          company: item.company,
         }))
       );
     } catch (error) {
@@ -120,63 +151,151 @@ export default function QuestionTable() {
     }
   };
 
+  React.useEffect(() => {
+    fetchData(selectedCompany, selectedTechnology);
+  }, [selectedCompany, selectedTechnology]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  React.useEffect(() => {
+    fetchData();
+    fetchCompanies();
+    fetchTechnologies();
+    setSelectedTechnology(id == "id" ? "" : id);
+  }, [id]);
+
+  React.useEffect(() => {
+    fetchData(selectedCompany, selectedTechnology);
+  }, [selectedCompany, selectedTechnology]);
+
+  React.useEffect(() => {
+    fetchData(selectedCompany, selectedTechnology);
+  }, [selectedCompany, selectedTechnology]);
+
+  React.useEffect(() => {
+    setRows(
+      questions.map((question) =>
+        createData(
+          question.id,
+          question.question,
+          question.type,
+          question.company
+        )
+      )
+    );
+  }, [questions]);
+
+  console.log("rows : ", rows);
+
   return (
-    <>
-      <Box>
-        <FormControl
-          sx={{ m: 1, minWidth: 120 }}
-          size="small"
-          style={{ marginTop: "30px", marginLeft: "50px" }}
+    <Paper
+      sx={{ width: "100%", overflow: "hidden" }}
+      style={{ marginTop: "40px", marginLeft: "60px" }}
+      className="container"
+    >
+      <FormControl
+        sx={{ m: 1, minWidth: 120 }}
+        size="small"
+        style={{ marginTop: "30px", marginLeft: "50px" }}
+      >
+        <InputLabel id="demo-select-small-label">Company</InputLabel>
+        <Select
+          labelId="demo-select-small-label"
+          id="demo-select-small"
+          value={selectedCompany}
+          label="Company"
+          onChange={handleChangeCompany}
         >
-          <InputLabel id="demo-select-small-label">Company</InputLabel>
-          <Select
-            labelId="demo-select-small-label"
-            id="demo-select-small"
-            value={selectedCompany}
-            label="Company"
-            onChange={handleChangeCompany}
-          >
-            <MenuItem value="">{/* <em>None</em> */}</MenuItem>
-            {companies.map((company) => (
-              <MenuItem key={company.id} value={company.id}>
-                {company.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <TableContainer
-          component={Paper}
-          style={{ marginTop: "30px", marginLeft: "50px" }}
+          <MenuItem value="">{/* <em>None</em> */}</MenuItem>
+          {companies.map((company) => (
+            <MenuItem key={company.id} value={company.id}>
+              {company.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl
+        sx={{ m: 1, minWidth: 120 }}
+        size="small"
+        style={{ marginTop: "30px", marginLeft: "50px" }}
+      >
+        <InputLabel id="demo-select-small-label">Technology</InputLabel>
+        <Select
+          labelId="demo-select-small-label"
+          id="demo-select-small"
+          value={selectedTechnology}
+          label="Company"
+          onChange={handleChangeTecchnology}
         >
-          <Table aria-label="collapsible table">
-            <TableHead>
-              <TableRow>
-                <TableCell />
-                <TableCell>Questions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {questions.map((row, i) => (
-                <>
-                  <Row key={row.question} row={row} />
-                </>
+          <MenuItem value="">{/* <em>None</em> */}</MenuItem>
+          {technologies.map((technology) => (
+            <MenuItem key={technology.id} value={technology.id}>
+              {technology.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <TableContainer sx={{ maxHeight: 440 }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth,fontWeight: "600", fontSize: "17px" }}
+                >
+                  {column.label}
+                </TableCell>
               ))}
-            </TableBody>
-          </Table>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "end",
-              justifyContent: "end",
-              marginRight: "50px",
-            }}
-          >
-            {/* <Stack spacing={2}>
-              <Pagination count={10} />
-            </Stack> */}
-          </div>
-        </TableContainer>
-      </Box>
-    </>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                    {columns.map((column) => {
+                      if (column.id === "question") {
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            <Link to={`/answer/${row.id}`} style={{color:"black",textDecoration:"none"}}>
+                              {row[column.id]}
+                            </Link>
+                          </TableCell>
+                        );
+                      } else {
+                        const value = row[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.format && typeof value === "number"
+                              ? column.format(value)
+                              : value}
+                          </TableCell>
+                        );
+                      }
+                    })}
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 20]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </Paper>
   );
 }

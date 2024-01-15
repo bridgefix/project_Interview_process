@@ -17,6 +17,8 @@ import Answerr from "./Components/Answerr";
 
 import Signin from "./Components/Signin.js";
 
+import MUItable from "./Components/MUItable.js";
+
 const App = () => {
   return (
     <>
@@ -38,9 +40,11 @@ const App = () => {
               {/* <Route path="/ptable/:id" element={<Ptable />}></Route> */}
               <Route path="/technology" element={<Technology />} />
               <Route path="/company" element={<Company />} />
+
               <Route path="/interview/:id" element={<Interview />} />
+              {/* <Route path="/questions/:id" element={<MUItable />} />/ */}
               {/* <Route path="/details" element={<Details/>}/> */}
-              <Route path="/questions/:id" element={<Questionstable />} />
+              <Route path="/questions/:id" element={<Questionstable />} />/
               <Route path="/answer/:id" element={<Answerr />} />
             </Routes>
           </div>

@@ -39,6 +39,7 @@ const Index = () => {
       axios
         .post(`http://127.0.0.1:8000/api/login/`, data)
         .then((res) => {
+          localStorage.setItem("token", res.data.access);
           // window.localStorage.setItem("token", res.data.access);
           Navigate("/dashbroad");
         })
@@ -59,6 +60,7 @@ const Index = () => {
               <p>Please enter your credentials to login.</p>
             </div>
           </div>
+
           <form className="login-form">
             <input
               type="email"
@@ -76,11 +78,8 @@ const Index = () => {
               <button onClick={handleLogin}>login</button>
             </Link> */}
             <button className="btn btn-outline-dark" onClick={handleLogin}>
-              <Link
-                to="/dashbroad"
-                style={{ textDecoration: "none" }}
-              ></Link>
-            login
+              <Link to="/dashbroad" style={{ textDecoration: "none" }}></Link>
+              login
             </button>
 
             <p className="message">

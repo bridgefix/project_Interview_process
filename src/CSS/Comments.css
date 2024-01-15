@@ -97,3 +97,46 @@
   box-shadow: green;
   outline: none;
 }
+
+.instagram-comment-box {
+  width: 100%;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.comment-input-container {
+  display: flex;
+  align-items: center;
+}
+
+.comment-input-container input {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 20px;
+  margin-right: 8px;
+}
+
+.comment-icons {
+  display: flex;
+  align-items: center;
+}
+
+.emoji-icon {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.send-icon {
+  cursor: pointer;
+}
+@import '../../node_modules/@syncfusion/ej2-base/styles/bootstrap5.css';
+@import '../../node_modules/@syncfusion/ej2-icons/styles/bootstrap5.css';
+@import '../../node_modules/@syncfusion/ej2-buttons/styles/bootstrap5.css';
+@import '../../node_modules/@syncfusion/ej2-splitbuttons/styles/bootstrap5.css';
+@import '../../node_modules/@syncfusion/ej2-inputs/styles/bootstrap5.css';
+@import '../../node_modules/@syncfusion/ej2-lists/styles/bootstrap5.css';
+@import '../../node_modules/@syncfusion/ej2-navigations/styles/bootstrap5.css';
+@import '../../node_modules/@syncfusion/ej2-popups/styles/bootstrap5.css';
+@import '../../node_modules/@syncfusion/ej2-richtexteditor/styles/bootstrap5.css';

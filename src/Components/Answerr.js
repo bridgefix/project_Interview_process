@@ -1,11 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Comments from "./Comments";
@@ -13,11 +6,15 @@ import Comments from "./Comments";
 export default function BasicTable() {
   const { id } = useParams();
   const [answers, setAnswers] = useState();
+  const [questions,setQuestions]=useState();
 
   const fetchAnswer = () => {
-    axios.get(`http://127.0.0.1:8000/api/interview_tracking/question/${id}/`)
+    axios
+      .get(`${process.env.REACT_APP_BASE_URL}/question/${id}/`)
       .then((response) => {
         setAnswers(response.data);
+        setQuestions(response.data);
+        
       })
       .catch((error) => {
         console.error("Error fetching data: ", error);
@@ -27,39 +24,31 @@ export default function BasicTable() {
 
   useEffect(() => {
     fetchAnswer();
+    
   }, [id]);
 
   return (
-    <TableContainer
-      component={Paper}
-      className="container"
-      style={{ marginTop: "40px", marginLeft: "50px" }}
-    >
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold", fontSize: "25px" }}>
-              Answer
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {answers && (
-            <TableRow>
-              <TableCell
-                component="th"
-                scope="row"
-                style={{ fontSize: "17px" }}
-              >
-                {answers.answer}
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <br />
+    <>
+      <div className="col-lg-12 container" style={{ background: "white" }}>
+        <h2 style={{ marginTop: "30px", fontSize: "25px", paddingTop: "30px" }}>Questions</h2>
+        <p style={{ fontSize: "22px" }}>{questions && <>{questions.title}</>}</p>
+        <h2 style={{ marginTop: "30px", fontSize: "25px", paddingTop: "30px" }}>
+          Answer
+        </h2>
+        <hr />
+        <p style={{ fontSize: "17px" }}>{answers && <>{answers.answer}</>}</p>
+        <hr />
+        
+      </div>
+      <div className="col-lg-12  container">
+      <h2 style={{ marginTop: "30px", fontSize: "25px", paddingTop: "10px" ,textAlign:"center"}}>
+        </h2>
+        <Comments />
 
-      <Comments />
-    </TableContainer>
+          
+      </div>
+    
+       
+    </>
   );
 }

@@ -39,7 +39,9 @@
 
 body{
   overflow:hidden;
+  background-color: whitesmoke;
 }
 html{
   overflow: overlay;
 }
+

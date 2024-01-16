@@ -11,10 +11,20 @@ const Dashbroad = () => {
           <Cardss />
         </div>
       </div>
-      <div style={{ marginTop: "30px", marginLeft: "50px" }}>
+      <div style={{ marginTop: "30px", marginLeft: "100px" }}>
         <div className="row">
           <div className="col-lg-6" style={{ marginTop: "100px" }}>
             <Apexchart />
+          </div>
+          <div className="col-lg-6" style={{ marginTop: "100px" }}>
+            <Donutchart />
+          </div>
+        </div>
+      </div>
+      <div style={{ marginTop: "30px", marginLeft: "100px" }}>
+        <div className="row">
+          <div className="col-lg-6" style={{ marginTop: "100px" }}>
+            {/* <ApexChart/> */}
           </div>
           <div className="col-lg-6" style={{ marginTop: "100px" }}>
             <Donutchart />

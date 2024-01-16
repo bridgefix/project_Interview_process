@@ -1,139 +1,201 @@
 // import * as React from "react";
-// import axios from "axios";
+// import Paper from "@mui/material/Paper";
 // import Table from "@mui/material/Table";
 // import TableBody from "@mui/material/TableBody";
 // import TableCell from "@mui/material/TableCell";
 // import TableContainer from "@mui/material/TableContainer";
 // import TableHead from "@mui/material/TableHead";
+// import TablePagination from "@mui/material/TablePagination";
 // import TableRow from "@mui/material/TableRow";
-// import Paper from "@mui/material/Paper";
+// import axios from "axios";
 // import { Link } from "react-router-dom";
-// import Pagination from "@mui/material/Pagination";
-// import Stack from "@mui/material/Stack";
 
-// export default function Technology() {
-//   const [technologies, setTechnologies] = React.useState([]);
+// const columns = [
+//   { id: "logo", label: "TECHNOLOGY LOGO", minWidth: 170 },
+//   { id: "name", label: "NAME", minWidth: 100 },
+// ];
+
+// export default function StickyHeadTable() {
+//   const [page, setPage] = React.useState(0);
+//   const [rowsPerPage, setRowsPerPage] = React.useState(2);
+
+//   const [rows, setRows] = React.useState([]);
 
 //   React.useEffect(() => {
-//     axios
-//       .get("http://127.0.0.1:8000/api/interview_tracking/technology/")
-//       .then((response) => {
-//         setTechnologies(response.data);
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching technologies:", error);
-//       });
+//     const fetchData = async () => {
+//       const response = await axios.get(
+//         "`/technology/"
+//       );
+//       setRows(response.data);
+//     };
+
+//     fetchData();
 //   }, []);
 
+//   const handleChangePage = (event, newPage) => {
+//     setPage(newPage);
+//   };
+
+//   const handleChangeRowsPerPage = (event) => {
+//     setRowsPerPage(+event.target.value);
+//     setPage(0);
+//   };
+
 //   return (
-//     <>
-//       <TableContainer
-//         component={Paper}
-//         style={{ marginTop: "30px", marginLeft: "50px" }}
-//       >
-//         <Table aria-label="simple table">
-//           <TableHead sx={{ minWidth:100 }} >
-//             <TableRow style={{ display: "flex", justifyContent: "center" }}>
-//             <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-//                 Logo
-//               </TableCell>
-//               <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-//                 Technology
-//               </TableCell>
+//     <Paper
+//       sx={{ width: "100%", overflow: "hidden" }}
+//       className="container"
+//       style={{ marginTop: "40px", marginLeft: "52px" }}
+//     >
+//       <TableContainer sx={{ maxHeight: 440 }}>
+//         <Table stickyHeader aria-label="sticky table">
+//           <TableHead>
+//             <TableRow>
+//               {columns.map((column) => (
+//                 <TableCell
+//                   key={column.id}
+//                   align={column.align}
+//                   style={{
+//                     minWidth: column.minWidth,
+//                     fontWeight: "bold",
+//                     fontSize: "17px",
+//                   }}
+//                 >
+//                   {column.label}
+//                 </TableCell>
+//               ))}
 //             </TableRow>
 //           </TableHead>
 //           <TableBody>
-//             {technologies.map((tech, index) => (
-//               <TableRow
-//                 key={index}
-//                 style={{
-//                   display: "flex",
-//                   justifyContent: "center",
-//                   backgroundColor: index % 2 === 0 ? "#f2f2f2" : "white",
-//                 }}
-//               >
-//                 <TableCell>
-//                   <Link to={`/ptable/${tech.id}`} style={{ color: "gray",fontSize:"20px",fontWeight: "600" }}>
-//                     {tech.name}
-//                   </Link>
-//                 </TableCell>
-//               </TableRow>
-//             ))}
+//             {rows
+//               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+//               .map((row) => {
+//                 return (
+//                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+//                     {columns.map((column) => {
+//                       const value = row[column.id];
+//                       return (
+//                         <TableCell key={column.id} align={column.align}>
+//                           {column.id === "name" ? (
+//                             <Link
+//                               to={`/questions/${row.id}`}
+//                               style={{ textDecoration: "none", color: "black" }}
+//                             >
+//                               {value}
+//                             </Link>
+//                           ) : (
+//                             <span>No logo available</span>
+//                           )}
+//                         </TableCell>
+//                       );
+//                     })}
+//                   </TableRow>
+//                 );
+//               })}
 //           </TableBody>
 //         </Table>
-       
 //       </TableContainer>
-//     </>
+//       <TablePagination
+//         rowsPerPageOptions={[1, 2, 5]}
+//         component="div"
+//         count={rows.length}
+//         rowsPerPage={rowsPerPage}
+//         page={page}
+//         onPageChange={handleChangePage}
+//         onRowsPerPageChange={handleChangeRowsPerPage}
+//       />
+//     </Paper>
 //   );
 // }
 
-
 import React, { useEffect, useState } from "react";
+import MUIDataTable from "mui-datatables";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import { Link } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
 
-export default function Technology() {
-  const [rows, setRows] = useState([]);
+const MUItable = () => {
+  const [data, setData] = useState([]);
+  const { id } = useParams();
+
+  const columns = [
+    {
+      name: "id",
+      label: "ID",
+      options: {
+        filter: true,
+        sort: true,
+        display: "excluded",
+      },
+    },
+    {
+      name: "logo",
+      label: "TECHNOLOGY LOGO",
+      options: {
+        filter: true,
+        sort: true,
+        customBodyRender: (value) => {
+          return <Avatar variant="rounded" src={value} alt="Technology Logo" />;
+        },
+      },
+    },
+    {
+      name: "name",
+      label: "NAME",
+      options: {
+        filter: true,
+        sort: false,
+        customBodyRender: (value, tableMeta) => {
+          const capitalizedValue =
+            value.charAt(0).toUpperCase() + value.slice(1);
+          const technologyId = data[tableMeta.rowIndex].id;
+          return (
+            <Link
+              to={`/questions/${technologyId}`}
+              style={{ textDecoration: "none", color: "black" }}
+            >
+                <span>{capitalizedValue}</span>
+            </Link>
+          );
+        },
+      },
+    },
+    
+  ];
+
+  const options = {
+    filterType: "checkbox",
+    onRowClick: (rowData, rowMeta) => {
+      const technologyId = rowData[0];
+      console.log(technologyId);
+      debugger;
+      window.location.href = `/questions/${technologyId}`;
+    },
+  };
+
+  const fetchData = async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/technology/`
+    );
+    setData(response.data);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(
-        "http://127.0.0.1:8000/api/interview_tracking/technology/"
-      );
-      setRows(response.data);
-    };
-
     fetchData();
   }, []);
 
   return (
-    <TableContainer
-      component={Paper}
-      style={{ marginTop: "30px", marginLeft: "50px" }}
-    >
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              Technology Logo
-            </TableCell>
-            <TableCell style={{ fontWeight: "bold", fontSize: "16px" }}>
-              Name
-            </TableCell>
-           
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, index) => (
-            <TableRow key={index}>
-              <TableCell component="th" scope="row">
-                {row.logo ? (
-                  <Link to={`/questions/${row.id}`}>
-                    <img
-                      src={row.logo}
-                      style={{ width: "30px", height: "30px" }}
-                      alt="Company Logo"
-                    />
-                  </Link>
-                ) : (
-                  <span>No logo available</span>
-                )}
-              </TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.contact_email}</TableCell>
-              <TableCell>{row.location}</TableCell>
-          
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div>
+      <MUIDataTable
+        title={"Employee List"}
+        data={data}
+        columns={columns}
+        options={options}
+      />
+       
+    </div>
   );
-}
+};
+
+export default MUItable;

@@ -8,12 +8,14 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import Modals from "./Modals";
 const MUItable = () => {
   const [rows, setRows] = React.useState([]);
   const { id } = useParams();
   const [companies, setCompanies] = React.useState([]);
   const [selectedCompany, setSelectedCompany] = React.useState("");
   const [technologies, setTechnologies] = React.useState([]);
+  const [dataPostState,setDataPostState]=useState(false)
   const [selectedTechnology, setSelectedTechnology] = React.useState(
     id == "id" ? "" : id
   );
@@ -38,6 +40,11 @@ const MUItable = () => {
         // customBodyRender: (value) => {
         //   return <Avatar variant="rounded" src={value} alt="Comapny Logo" />;
         // },
+        // customBodyRender: (value) => {
+        //   const capitalizedValue =
+        //     // value.charAt(0).toUpperCase() + value.slice(1);
+        //   // return <span>{capitalizedValue}</span>;
+        // },
       },
     },
     {
@@ -46,31 +53,48 @@ const MUItable = () => {
       options: {
         filter: true,
         sort: false,
-        // customBodyRender: (value, tableMeta) => {
-        //   const companyId = data[tableMeta.rowIndex].id;
-        //   return (
-        //     <Link
-        //       to={`/interview/${companyId}`}
-        //       style={{ textDecoration: "none", color: "black" }}
-        //     >
-        //       {value}
-        //     </Link>
-        //   );
-        // },
+        customBodyRender: (value) => {
+          let color;
+          if (value !== undefined && value !== null) {
+            switch (value.toLowerCase()) {
+              case "easy":
+                color = "green";
+                break;
+              case "medium":
+                color = "#ffc107";
+                break;
+              case "hard":
+                color = "red";
+                break;
+              default:
+                color = "black";
+                break;
+            }
+            return <span style={{ color }}>{value}</span>;
+          } else {
+            return <span style={{ color: "black" }}>Undefined or null</span>;
+          }
+        },
       },
     },
+
     {
       name: "company",
       label: "COMPANY",
       options: {
         filter: true,
         sort: false,
-      
+        customBodyRender: (value) => {
+          if (typeof value === "string") {
+            const capitalizedValue =
+              value.charAt(0).toUpperCase() + value.slice(1);
+            return <span>{capitalizedValue}</span>;
+          } else {
+            return <span>Invalid value</span>;
+          }
+        },
       },
     },
-   
-    
-
   ];
 
   const options = {
@@ -78,30 +102,23 @@ const MUItable = () => {
     onRowClick: (rowData, rowMeta) => {
       const anserId = rowData[0];
       console.log(anserId);
-      debugger;
+
       window.location.href = `/answer/${anserId}`;
     },
   };
 
-  // const fetchData = async () => {
-  //   const response = await axios.get(
-  //     "http://127.0.0.1:8000/api/interview_tracking/company/"
-  //   );
-  //   setData(response.data);
-  // };
   const handleChangeCompany = (event) => {
     setSelectedCompany(event.target.value);
   };
 
-  
-function createData(id,question, type, company, answer) {
-  return {id, question, type, company, answer };
-}
+  function createData(id, question, type, company, answer) {
+    return { id, question, type, company, answer };
+  }
 
   const fetchTechnologies = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/interview_tracking/technology/"
+        `${process.env.REACT_APP_BASE_URL}/interview_tracking/technology/`
       );
       setTechnologies(response.data);
     } catch (error) {
@@ -116,7 +133,7 @@ function createData(id,question, type, company, answer) {
   const fetchCompanies = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/interview_tracking/company/"
+        `${process.env.REACT_APP_BASE_URL}/interview_tracking/company/`
       );
       setCompanies(response.data);
     } catch (error) {
@@ -136,11 +153,11 @@ function createData(id,question, type, company, answer) {
       let response;
       if (selectedTechnology !== "") {
         response = await axios.get(
-          `http://127.0.0.1:8000/api/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
+          `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
         );
       } else {
         response = await axios.get(
-          `http://127.0.0.1:8000/api/interview_tracking/question/?company_id=${selectedCompany}`
+          `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?company_id=${selectedCompany}`
         );
       }
 
@@ -149,24 +166,24 @@ function createData(id,question, type, company, answer) {
           if (selectedTechnology === null) {
             // ;
             response = await axios.get(
-              "http://127.0.0.1:8000/api/interview_tracking/question/"
+              `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/`
             );
           } else {
             // ;
             response = await axios.get(
-              `http://127.0.0.1:8000/api/interview_tracking/question/?technology_id=${selectedTechnology}`
+              `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?technology_id=${selectedTechnology}`
             );
           }
         } else {
           if (selectedTechnology === null) {
             // ;
             response = await axios.get(
-              `http://127.0.0.1:8000/api/interview_tracking/question/?technology_id=${id}`
+              `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?technology_id=${id}`
             );
           } else {
             // ;
             response = await axios.get(
-              `http://127.0.0.1:8000/api/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
+              `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
             );
           }
         }
@@ -174,12 +191,12 @@ function createData(id,question, type, company, answer) {
         if (selectedTechnology === null) {
           // ;
           response = await axios.get(
-            `http://127.0.0.1:8000/api/interview_tracking/question/?company_id=${selectedCompany}`
+            `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?company_id=${selectedCompany}`
           );
         } else {
           // ;
           response = await axios.get(
-            `http://127.0.0.1:8000/api/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
+            `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
           );
         }
       }
@@ -217,12 +234,29 @@ function createData(id,question, type, company, answer) {
     fetchData();
   }, []);
 
+  const DataPost = async (payload) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/`,
+        payload
+      );
+      setDataPostState(true)
+      fetchData()
+    } catch (error) {
+      console.error("Error posting data: ", error);
+    }
+  };
+
   return (
-    <div  className="container">
-        <FormControl
+    <div className="container">
+      <FormControl
         sx={{ m: 1, minWidth: 120 }}
         size="small"
-        style={{ marginTop: "30px", marginLeft: "50px" }}
+        style={{
+          marginTop: "30px",
+          marginLeft: "50px",
+          backgroundColor: "white",
+        }}
       >
         <InputLabel id="demo-select-small-label">Company</InputLabel>
         <Select
@@ -260,6 +294,13 @@ function createData(id,question, type, company, answer) {
             </MenuItem>
           ))}
         </Select>
+      </FormControl>
+      <FormControl
+        sx={{ m: 1, minWidth: 150 }}
+        size="small"
+        style={{ marginTop: "30px", marginLeft: "50px" }}
+      >
+        <Modals DataPostFun = {DataPost} dataPostState={dataPostState}/>
       </FormControl>
       <MUIDataTable
         title={"Employee List"}

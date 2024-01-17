@@ -1,6 +1,6 @@
 import React from "react";
 import Apexchart from "./Apexchart";
-import Donutchart from "./Donutchart";
+import Donutchart from "../Donutchart";
 import Cardss from "./Cardss";
 
 const Dashbroad = () => {
@@ -24,7 +24,6 @@ const Dashbroad = () => {
       <div style={{ marginTop: "30px", marginLeft: "100px" }}>
         <div className="row">
           <div className="col-lg-6" style={{ marginTop: "100px" }}>
-            {/* <ApexChart/> */}
           </div>
           <div className="col-lg-6" style={{ marginTop: "100px" }}>
             <Donutchart />

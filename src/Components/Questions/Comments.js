@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../CSS/Comments.css";
+import "../../CSS/Comments.css";
 import { useParams } from "react-router-dom";
 
 function Comments() {
@@ -22,7 +22,7 @@ function Comments() {
     };
     axios
       .post(
-        `${process.env.REACT_APP_BASE_URL}/comment/${id}/`,
+        `${process.env.REACT_APP_BASE_URL}/interview_tracking/comment/${id}/`,
         userData
       )
       .then((response) => {
@@ -38,7 +38,7 @@ function Comments() {
 
   const fetchComments = () => {
     axios
-      .get(`${process.env.REACT_APP_BASE_URL}/comment/${id}/`)
+      .get(`${process.env.REACT_APP_BASE_URL}/interview_tracking/comment/${id}/`)
       .then((response) => {
         setComments(response.data);
         if (response.data.length > 0) {
@@ -100,21 +100,15 @@ function Comments() {
           <span role="img" aria-label="grinning">
             😄
           </span>
-          {/* Add more smile icons as needed */}
+          
         </div>
-
-        {/* <br /> */}
         <br />
         <div>
           <button
             onClick={onClickHandler}
             className="comment-button button-15"
-            // style={{ marginRight: "10px", marginLeft: "10px" }}
-          >
-            Submit
-          </button>
 
-          {/* <button classN/ame="comment-button button-16">Cancel</button> */}
+          > Submit </button>
         </div>
         <br />
         <br />

@@ -14,13 +14,6 @@ const Index = () => {
   const handlePassword = (e) => {
     setPassword(e.target.value);
   };
-  // const handleLogin = async () => {
-  //   const response = await axios.post("http://127.0.0.1:8000/api/login/", {
-  //     email: email,
-  //     password: password,
-  //   });
-
-  // };
 
   function handleLogin(e) {
     e.preventDefault();
@@ -37,10 +30,10 @@ const Index = () => {
       data.append("password", password);
 
       axios
-        .post(`http://127.0.0.1:8000/api/login/`, data)
+        .post(`${process.env.REACT_APP_BASE_URL}/login/`, data)
+        
         .then((res) => {
           localStorage.setItem("token", res.data.access);
-          // window.localStorage.setItem("token", res.data.access);
           Navigate("/dashbroad");
         })
         .catch((err) => {
@@ -74,9 +67,6 @@ const Index = () => {
               value={password}
               onChange={handlePassword}
             />
-            {/* <Link to="/dashbroad">
-              <button onClick={handleLogin}>login</button>
-            </Link> */}
             <button className="btn btn-outline-dark" onClick={handleLogin}>
               <Link to="/dashbroad" style={{ textDecoration: "none" }}></Link>
               login

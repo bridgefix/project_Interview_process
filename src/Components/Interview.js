@@ -1,235 +1,15 @@
-// import * as React from "react";
-// import Paper from "@mui/material/Paper";
-// import Table from "@mui/material/Table";
-// import TableBody from "@mui/material/TableBody";
-// import TableCell from "@mui/material/TableCell";
-// import TableContainer from "@mui/material/TableContainer";
-// import TableHead from "@mui/material/TableHead";
-// import TablePagination from "@mui/material/TablePagination";
-// import TableRow from "@mui/material/TableRow";
-// import { Link, useParams } from "react-router-dom";
-// import axios from "axios";
-// import DeleteIcon from "@mui/icons-material/Delete";
-// import EditIcon from "@mui/icons-material/Edit";
-// import MUIDataTable from "mui-datatables";
-
-// const columns = [
-//   {
-//     id: "interview_round",
-//     label: "INTERVIEW_ROUND",
-//     minWidth: 170,
-//     style: {
-//       fontSize: "medium",
-//       fontWeight: "revert",
-//     },
-//   },
-
-//   { id: "result", label: "RESULT", minWidth: 100 },
-//   {
-//     id: "actual_interviewee",
-//     label: "ACTUAL_INTERVIEW",
-//     minWidth: 170,
-//     align: "right",
-//     format: (value) => value.toLocaleString("en-US"),
-//   },
-//   {
-//     id: "interviewee",
-//     label: "INTERVIEW",
-//     minWidth: 170,
-//     align: "right",
-//     format: (value) => value.toLocaleString("en-US"),
-//   },
-//   {
-//     id: "technology",
-//     label: "TECHNOLOGY",
-//     minWidth: 170,
-//     align: "right",
-//     format: (value) => value.toFixed(2),
-//   },
-//   {
-//     id: "interviewer",
-//     label: "INTERVIEWER",
-//     minWidth: 170,
-//     align: "right",
-//     format: (value) => value.toFixed(2),
-//   },
-//   {
-//     id: "action",
-//     label: "Action",
-//     minWidth: 170,
-//     align: "right",
-//     format: (value) => value.toFixed(2),
-//   },
-//   {
-//     id: "action",
-//     label: "Action",
-//     minWidth: 170,
-//     align: "right",
-//     format: (value) => value.toFixed(2),
-//   },
-
-// ];
-
-// export default function StickyHeadTable() {
-//   const [page, setPage] = React.useState(0);
-//   const [rowsPerPage, setRowsPerPage] = React.useState(2);
-
-//   const handleChangePage = (event, newPage) => {
-//     setPage(newPage);
-//   };
-
-//   const handleChangeRowsPerPage = (event) => {
-//     setRowsPerPage(+event.target.value);
-//     setPage(0);
-//   };
-
-//   const [rows, setRows] = React.useState([]);
-//   const { id } = useParams();
-
-//   const fetchData = async () => {
-//     let response;
-//     if (id === "id") {
-//       response = await axios.get(
-//         "http://127.0.0.1:8000/api/interview_tracking/interview/"
-//       );
-//     } else {
-//       response = await axios.get(
-//         `http://127.0.0.1:8000/api/interview_tracking/interview/?company_id=${id}`
-//       );
-//     }
-//     setRows(response.data);
-//   };
-
-//   const deleteData = async (id) => {
-//     try {
-//       await axios.delete(
-//         `http://127.0.0.1:8000/api/interview_tracking/interview/${id}/`
-//       );
-//       console.log("Row deleted:", id);
-//       setRows((prevRows) => prevRows.filter((row) => row.id !== id));
-//     } catch (error) {
-//       console.error("Error deleting row:", error);
-//     }
-//   };
-
-//   React.useEffect(() => {
-//     fetchData();
-//   }, [id]);
-
-//   return (
-//     <div
-//       style={{
-//         display: "flex",
-//         justifyContent: "center",
-//         alignItems: "center",
-//         minHeight: "200px",
-//       }}
-//     >
-//       <Paper
-//         sx={{ width: "100%", overflow: "hidden" }}
-//         className="container"
-//         style={{ marginTop: "40px", marginLeft: "45px" }}
-//       >
-//         <TableContainer sx={{ maxHeight: 440 }}>
-//           <Table stickyHeader aria-label="sticky table">
-//             <TableHead>
-//               <TableRow>
-//                 {columns.map((column) => (
-//                   <TableCell
-//                     key={column.id}
-//                     align={column.align}
-//                     style={{
-//                       minWidth: column.minWidth,
-//                       fontWeight: "bold",
-//                       fontSize: "16px",
-//                     }}
-//                   >
-//                     {column.label}
-//                   </TableCell>
-//                 ))}
-//               </TableRow>
-//             </TableHead>
-//             <TableBody>
-//               {rows
-//                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-//                 .map((row) => {
-//                   return (
-//                     <TableRow
-//                       hover
-//                       role="checkbox"
-//                       tabIndex={-1}
-//                       key={row.code}
-//                     >
-//                       {columns.map((column) => {
-//                         const value = row[column.id];
-//                         return (
-//                           <TableCell key={column.id} align={column.align}>
-//                             {column.id === "interview_round" ? (
-//                               <Link
-//                                 to="/questions/id"
-//                                 style={{
-//                                   color: "black",
-//                                   textDecoration: "none",
-//                                 }}
-//                               >
-//                                 {column.format && typeof value === "number"
-//                                   ? column.format(value)
-//                                   : value}
-//                               </Link>
-//                             ) : column.id === "action" ? (
-//                               <>
-//                                 {value}
-//                                 <DeleteIcon
-//                                   style={{ color: "red", cursor: "pointer" }}
-//                                   onClick={() => {
-//                                     console.log(
-//                                       "Deleting row with id:",
-//                                       row.id
-//                                     );
-//                                     deleteData(row.id);
-//                                   }}
-//                                 />
-
-//                                 <EditIcon style={{ color: "green" }} />
-//                               </>
-//                             ) : column.format && typeof value === "number" ? (
-//                               column.format(value)
-//                             ) : (
-//                               value
-//                             )}
-//                           </TableCell>
-//                         );
-//                       })}
-//                     </TableRow>
-//                   );
-//                 })}
-//             </TableBody>
-//           </Table>
-//         </TableContainer>
-//         <TablePagination
-//           rowsPerPageOptions={[1, 2, 10]}
-//           component="div"
-//           count={rows.length}
-//           rowsPerPage={rowsPerPage}
-//           page={page}
-//           onPageChange={handleChangePage}
-//           onRowsPerPageChange={handleChangeRowsPerPage}
-//         />
-//       </Paper>
-
-//     </div>
-//   );
-// }
-
 import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import { useParams } from "react-router-dom";
 import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
 
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { getResponseId } from "./Redux/Actions/InterviewActions";
 
 const MUItable = () => {
+  const dispatch = useDispatch();
+  
   const columns = [
     {
       name: "interview_round",
@@ -261,23 +41,24 @@ const MUItable = () => {
         filter: true,
         sort: false,
         customBodyRender: (value) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
+          // Check if value is not null or undefined before accessing 'charAt'
+          const capitalizedValue = value ? value.toUpperCase():""
           return <span>{capitalizedValue}</span>;
         },
       },
-    },
+    }
+,    
     {
       name: "interviewee",
       label: "INTERVIEW",
       options: {
         filter: true,
         sort: false,
-        customBodyRender: (value) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
-          return <span>{capitalizedValue}</span>;
-        },
+        // customBodyRender: (value) => {
+        //   const capitalizedValue =
+        //     value.toUpperCase() + value.slice(1);
+        //   return <span>{capitalizedValue}</span>;
+        // },
       },
     },
     {
@@ -352,11 +133,11 @@ const MUItable = () => {
       options: {
         filter: true,
         sort: false,
-        customBodyRender: (value) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
-          return <span>{capitalizedValue}</span>;
-        },
+        // customBodyRender: (value) => {
+        //   const capitalizedValue =
+        //     value.charAt(0).toUpperCase() + value.slice(1);
+        //   return <span>{capitalizedValue}</span>;
+        // },
       },
     },
     {
@@ -410,21 +191,26 @@ const MUItable = () => {
     let response;
     if (id === "id") {
       response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/interview/`
-        // "http://127.0.0.1:8000/api/interview_tracking/interview/"
+        `${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/`
       );
     } else {
       response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/interview/?company_id=${id}`
+        `${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/?company_id=${id}`
       );
     }
     setData(response.data);
     console.log("response :", response.data);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // const localId = window.localStorage.getItem("id");
+
+  // useEffect(() => {
+  //     dispatch(getResponseId(localId))
+  // }, [localId]);
+
+  useEffect(()=>{
+    fetchData()
+  })
 
   return (
     <div>

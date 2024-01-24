@@ -1,19 +1,65 @@
 import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import { useDispatch, useSelector } from "react-redux";
-import {getResponseTechnology } from "./Redux/Actions/InterviewActions";
+import {  getResponseTechnology } from "./Redux/Actions/InterviewActions";
+import axios from "axios";
+import Swal from "sweetalert2";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 
 const MUItable = () => {
   const [data, setData] = useState([]);
   const { id } = useParams();
-  const dispatch=useDispatch()
-  const interviewData = useSelector((state) => state.interviewData);
+  const dispatch = useDispatch();
+  const interviewData = useSelector(
+    (state) => state.InterviewReducer2.InterviewData
+  );
+  useEffect(() => {
+    dispatch(getResponseTechnology(id));
+  }, []);
 
-
+  const userRole = "admin";
+  
+  const deleteTechnology = (event, technologyId) => {
+    event.stopPropagation();
+  
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`${process.env.REACT_APP_BASE_URL}/interview_tracking/technology/${technologyId}/`)
+          .then((response) => {
+            console.log('Delete successful:', response);
+            dispatch(getResponseTechnology(id));
+            Swal.fire({
+              icon: 'success',
+              title: 'Technology deleted successfully!',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          })
+          .catch((error) => {
+            console.error('Error deleting Technology:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Something went wrong while deleting the Tehcnology!',
+            });
+          });
+      }
+    });
+  };
+  
   const columns = [
     {
       name: "id",
@@ -44,7 +90,7 @@ const MUItable = () => {
         customBodyRender: (value, tableMeta) => {
           const capitalizedValue =
             value.charAt(0).toUpperCase() + value.slice(1);
-          const technologyId = data[tableMeta.rowIndex].id;
+          const technologyId = interviewData[tableMeta.rowIndex].id;
           return (
             <Link
               to={`/questions/${technologyId}`}
@@ -56,6 +102,31 @@ const MUItable = () => {
         },
       },
     },
+    {
+      name: "action",
+      label: "ACTION",
+      options: {
+        customBodyRender: (value, tableMeta) => (
+          <>
+            {userRole === "admin" && (
+              <>
+                {/* <EditIcon
+                  style={{ color: "green", cursor: "pointer", marginRight: 10 }}
+                  onClick={() => handleEditClick(tableMeta.rowData[0])}
+                  /> */}
+                
+                <DeleteIcon
+                  style={{ color: "red", cursor: "pointer" ,marginLeft:"20px"}}
+                  onClick={(event) =>
+                    deleteTechnology(event, tableMeta.rowData[0])
+                  }
+                />
+              </>
+            )}
+          </>
+        ),
+      },
+    },
   ];
 
   const options = {
@@ -63,31 +134,27 @@ const MUItable = () => {
     onRowClick: (rowData, rowMeta) => {
       const technologyId = rowData[0];
       console.log(technologyId);
-    
+
       window.location.href = `/questions/${technologyId}`;
     },
   };
 
-  const fetchData = async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/interview_tracking/technology/`
-    );
-  
-    setData(response.data);
-  };
+  // const fetchData = async () => {
+  //   const response = await axios.get(
+  //     `${process.env.REACT_APP_BASE_URL}/interview_tracking/technology/`
+  //   );
 
-  // useEffect(() => {
-  //   dispatch(getResponseTechnology(id));
-  // }, [dispatch, id]);
+  //   setData(response.data);
+  // };
 
-    
-  useEffect(()=>{
-    fetchData()  })
+  useEffect(() => {
+    // fetchData()
+  });
   return (
     <div>
       <MUIDataTable
         title={"Employee List"}
-        data={data}
+        data={interviewData}
         columns={columns}
         options={options}
       />

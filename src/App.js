@@ -14,6 +14,7 @@ import DrawerAppBar from "./Components/Nabarr";
 import Answerr from "./Components/Questions/Answerr.js";
 
 import Signin from "./Components/Signin.js";
+import Questionsaddd from "./Components/Questions/Questionsaddd.js";
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
               <Route path="/interview/:id" element={<Interview />} />
               <Route path="/questions/:id" element={<Questionstable />} />/
               <Route path="/answer/:id" element={<Answerr />} />
+              <Route path="/questionsadd" element={<Questionsaddd/>}/>
             </Routes>
           </div>
         </div>

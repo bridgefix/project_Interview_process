@@ -1,25 +1,67 @@
 import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
-
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Modals from "./Modals";
+import { Button } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getResponseQuestions,
+  getResponseCompany,
+  getResponseTechnology,
+} from "../Redux/Actions/InterviewActions";
+import Swal from "sweetalert2";
 const MUItable = () => {
+  const dispatch = useDispatch();
   const [rows, setRows] = React.useState([]);
   const { id } = useParams();
   const [companies, setCompanies] = React.useState([]);
   const [selectedCompany, setSelectedCompany] = React.useState("");
   const [technologies, setTechnologies] = React.useState([]);
-  const [dataPostState,setDataPostState]=useState(false)
-  const [selectedTechnology, setSelectedTechnology] = React.useState(
-    id == "id" ? "" : id
-  );
+  const [dataPostState, setDataPostState] = useState(false);
+  const [selectedTechnology, setSelectedTechnology] = React.useState("");
   const [questions, setQuestions] = React.useState([]);
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null)
+  const navigate = useNavigate();
+  const questionsData = useSelector(
+    (state) => state.InterviewReducer2.QuestionsData
+  );
+  const CompanyData = useSelector(
+    (state) => state.InterviewReducer2.CompanyData
+  );
+
+  const InterviewData = useSelector(
+    (state) => state.InterviewReducer2.InterviewData
+  );
+
+  useEffect(() => {
+    setCompanies(CompanyData == null ? [] : CompanyData);
+  }, [CompanyData]);
+
+  useEffect(() => {
+    dispatch(getResponseCompany(id, selectedCompany));
+  }, []);
+
+  useEffect(() => {
+    setTechnologies(InterviewData == null ? [] : InterviewData);
+  }, [InterviewData]);
+
+  useEffect(() => {
+    dispatch(getResponseTechnology());
+  }, []);
+
+  // console.log("questionsData2 :", questionsData2);
+
+  // useEffect(()=>{
+  //   dispatch(getResponseQuestions1(id, selectedCompany));
+  // })
+  const userRole = "admin";
 
   const columns = [
     {
@@ -95,8 +137,91 @@ const MUItable = () => {
         },
       },
     },
+    {
+      name: "action",
+      label: "ACTION",
+      options: {
+        customBodyRender: (value, tableMeta) => (
+          <>
+            {userRole === "admin" && (
+              <>
+                {/* <EditIcon
+                  style={{ color: "green", cursor: "pointer", marginRight: 10 }}
+                  onClick={() => handleEditClick(tableMeta.rowData[0])}
+                  /> */}
+                
+                <DeleteIcon
+                  style={{ color: "red", cursor: "pointer" ,marginLeft:"20px"}}
+                  onClick={(event) =>
+                    deleteQuestions(event, tableMeta.rowData[0])
+                  }
+                />
+              </>
+            )}
+          </>
+        ),
+      },
+    },
   ];
+  const handleEditClick = (questionId) => {
+    setSelectedQuestionId(questionId);
+    // You can redirect to the update page or show a modal for updating
+    // For simplicity, I'm calling the fetchData function here
+    // fetchData();
+  };
 
+  const deleteQuestions = (event, questionId) => {
+    event.stopPropagation();
+  
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`${process.env.REACT_APP_BASE_URL}/interview_tracking/questions/${questionId}/`)
+          .then((response) => {
+            console.log('Delete successful:', response);
+            dispatch(getResponseTechnology(id));
+            Swal.fire({
+              icon: 'success',
+              title: '  deleted successfully!',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          })
+          .catch((error) => {
+            console.error('Error deleting Interview:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Something went wrong while deleting the Interview!',
+            });
+          });
+      }
+    });
+  };
+  
+  // const confirmDelete = () => {
+  //   Swal.fire({
+  //     title: 'Are you sure?',
+  //     text: 'You won\'t be able to revert this!',
+  //     icon: 'warning',
+  //     showCancelButton: true,
+  //     confirmButtonColor: '#3085d6',
+  //     cancelButtonColor: '#d33',
+  //     confirmButtonText: 'Yes, delete it!'
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       deleteQuestions();
+
+  //     }
+  //   });
+  // };
   const options = {
     filterType: "checkbox",
     onRowClick: (rowData, rowMeta) => {
@@ -106,102 +231,46 @@ const MUItable = () => {
       window.location.href = `/answer/${anserId}`;
     },
   };
-
   const handleChangeCompany = (event) => {
     setSelectedCompany(event.target.value);
+    setSelectedTechnology("");
+    dispatch(getResponseQuestions(event.target.value, event.target.value, selectedTechnology));
   };
-
   function createData(id, question, type, company, answer) {
     return { id, question, type, company, answer };
   }
 
-  const fetchTechnologies = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/interview_tracking/technology/`
-      );
-      setTechnologies(response.data);
-    } catch (error) {
-      console.error("Error fetching technologies:", error);
-    }
-  };
+  // const fetchTechnologies = async () => {
+  //   // try {
+  //   // const response = await axios.get(
+  //   //   `${process.env.REACT_APP_BASE_URL}/interview_tracking/technology/`
+  //   // );
+  //   //   setTechnologies(response.data);
+  //   // } catch (error) {
+  //   //   console.error("Error fetching technologies:", error);
+  //   // }
+  // };
   const handleChangeTecchnology = (event) => {
     setSelectedTechnology(event.target.value);
-    fetchData(selectedCompany, event.target.value);
+    dispatch(getResponseQuestions(event.target.value, selectedCompany, event.target.value));
   };
 
-  const fetchCompanies = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/interview_tracking/company/`
-      );
-      setCompanies(response.data);
-    } catch (error) {
-      console.error("Error fetching companies:", error);
-    }
-  };
+  // const fetchCompanies = async () => {
+  //   // try {
+  //   //   const response = await axios.get(
+  //   //     `${process.env.REACT_APP_BASE_URL}/interview_tracking/company/`
+  //   //   );
+  //   //   setCompanies(response.data);
+  //   // } catch (error) {
+  //   //   console.error("Error fetching companies:", error);
+  //   // }
+    // dispatch(/getResponseQuestions1(id, selectedCompany));
+  // };
 
-  React.useEffect(() => {
-    fetchData();
-    fetchCompanies();
-    fetchTechnologies();
-    setSelectedTechnology(id == "id" ? "" : id);
-  }, [id]);
-
-  const fetchData = async () => {
-    try {
-      let response;
-      if (selectedTechnology !== "") {
-        response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
-        );
-      } else {
-        response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?company_id=${selectedCompany}`
-        );
-      }
-
-      if (selectedCompany === null) {
-        if (id === "id") {
-          if (selectedTechnology === null) {
-            // ;
-            response = await axios.get(
-              `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/`
-            );
-          } else {
-            // ;
-            response = await axios.get(
-              `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?technology_id=${selectedTechnology}`
-            );
-          }
-        } else {
-          if (selectedTechnology === null) {
-            // ;
-            response = await axios.get(
-              `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?technology_id=${id}`
-            );
-          } else {
-            // ;
-            response = await axios.get(
-              `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
-            );
-          }
-        }
-      } else {
-        if (selectedTechnology === null) {
-          // ;
-          response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?company_id=${selectedCompany}`
-          );
-        } else {
-          // ;
-          response = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/?company_id=${selectedCompany}&technology_id=${selectedTechnology}`
-          );
-        }
-      }
+  useEffect(() => {
+    if (questionsData.length > 0) {
       setQuestions(
-        response.data.map((item) => ({
+        questionsData.map((item) => ({
           id: item.id,
           question: item.title,
           answer: item.answer,
@@ -209,10 +278,19 @@ const MUItable = () => {
           company: item.company,
         }))
       );
-    } catch (error) {
-      console.error("Error fetching questions:", error);
     }
-  };
+    else{
+      setQuestions(questionsData)
+    }
+  }, [questionsData]);
+
+  React.useEffect(() => {
+    dispatch(getResponseQuestions(id, selectedCompany, selectedTechnology));
+    // fetchCompanies();
+    // fetchTechnologies();
+    setSelectedTechnology(id == "id" ? "" : id);
+  }, [id]);
+
   React.useEffect(() => {
     setRows(
       questions.map((question) =>
@@ -227,11 +305,11 @@ const MUItable = () => {
   }, [questions]);
 
   React.useEffect(() => {
-    fetchData(selectedCompany, selectedTechnology);
+    // fetchData(selectedCompany, selectedTechnology);
   }, [selectedCompany, selectedTechnology]);
 
   useEffect(() => {
-    fetchData();
+    dispatch(getResponseQuestions(id, selectedCompany, selectedTechnology));
   }, []);
 
   const DataPost = async (payload) => {
@@ -240,8 +318,8 @@ const MUItable = () => {
         `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/`,
         payload
       );
-      setDataPostState(true)
-      fetchData()
+      setDataPostState(true);
+      // fetchData();
     } catch (error) {
       console.error("Error posting data: ", error);
     }
@@ -258,7 +336,9 @@ const MUItable = () => {
           backgroundColor: "white",
         }}
       >
-        <InputLabel id="demo-select-small-label">Company</InputLabel>
+        <InputLabel id="demo-select-small-label" style={{ color: "black" }}>
+          Company
+        </InputLabel>
         <Select
           labelId="demo-select-small-label"
           id="demo-select-small"
@@ -266,7 +346,9 @@ const MUItable = () => {
           label="Company"
           onChange={handleChangeCompany}
         >
-          <MenuItem value="">{/* <em>None</em> */}</MenuItem>
+          <MenuItem value="">
+            <em>All</em>
+          </MenuItem>
           {companies.map((company) => (
             <MenuItem key={company.id} value={company.id}>
               {company.name}
@@ -279,7 +361,9 @@ const MUItable = () => {
         size="small"
         style={{ marginTop: "30px", marginLeft: "50px" }}
       >
-        <InputLabel id="demo-select-small-label">Technology</InputLabel>
+        <InputLabel id="demo-select-small-label" style={{ color: "black" }}>
+          Technology
+        </InputLabel>
         <Select
           labelId="demo-select-small-label"
           id="demo-select-small"
@@ -287,7 +371,9 @@ const MUItable = () => {
           label="Company"
           onChange={handleChangeTecchnology}
         >
-          <MenuItem value="">{/* <em>None</em> */}</MenuItem>
+          <MenuItem value="">
+            <em>All</em>
+          </MenuItem>
           {technologies.map((technology) => (
             <MenuItem key={technology.id} value={technology.id}>
               {technology.name}
@@ -300,8 +386,20 @@ const MUItable = () => {
         size="small"
         style={{ marginTop: "30px", marginLeft: "50px" }}
       >
-        <Modals DataPostFun = {DataPost} dataPostState={dataPostState}/>
+        {/* <Modals DataPostFun = {DataPost} dataPostState={dataPostState}/> */}
+
+        <Link to="/questionsadd">
+          <Button
+            variant="outlined"
+            style={{ color: "black", outline: "black", borderColor: "gray" }}
+            DataPostFun={DataPost}
+            dataPostState={dataPostState}
+          >
+            Add Questions
+          </Button>
+        </Link>
       </FormControl>
+
       <MUIDataTable
         title={"Employee List"}
         data={rows}

@@ -45,3 +45,7 @@ html{
   overflow: overlay;
 }
 
+.ql-toolbar.ql-snow{
+width: 1000px;
+margin-left: 150px;
+}

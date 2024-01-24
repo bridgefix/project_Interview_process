@@ -4,13 +4,67 @@ import { useParams } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { getResponseId } from "./Redux/Actions/InterviewActions";
+import { useDispatch, useSelector } from "react-redux";
+import { getResponseInterview } from "./Redux/Actions/InterviewActions";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Swal from "sweetalert2";
 
 const MUItable = () => {
   const dispatch = useDispatch();
+  const technologyData = useSelector(
+    (state) => state.InterviewReducer2.TechnologyData
+  );
+  useEffect(() => {
+    dispatch(getResponseInterview(id));
+  }, []);
+
+  const deleteInterview = (event, interviewId) => {
+    event.stopPropagation();
   
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/${interviewId}/`)
+          .then((response) => {
+            console.log('Delete successful:', response);
+            dispatch(getResponseInterview(id));
+            Swal.fire({
+              icon: 'success',
+              title: 'Interview deleted successfully!',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          })
+          .catch((error) => {
+            console.error('Error deleting Interview:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Something went wrong while deleting the Interview!',
+            });
+          });
+      }
+    });
+  };
+  
+  const userRole = "admin";
   const columns = [
+    {
+      name: "id",
+      label: "NAME",
+      options: {
+        filter: true,
+        sort: true,
+        display: "excluded",
+      },
+    },
     {
       name: "interview_round",
       label: "INTERVIEW_ROUND",
@@ -42,12 +96,11 @@ const MUItable = () => {
         sort: false,
         customBodyRender: (value) => {
           // Check if value is not null or undefined before accessing 'charAt'
-          const capitalizedValue = value ? value.toUpperCase():""
+          const capitalizedValue = value ? value.toUpperCase() : "";
           return <span>{capitalizedValue}</span>;
         },
       },
-    }
-,    
+    },
     {
       name: "interviewee",
       label: "INTERVIEW",
@@ -87,46 +140,46 @@ const MUItable = () => {
       },
     },
 
-    {
-      name: "feedback",
-      label: "FEEDBACK",
-      options: {
-        filter: true,
-        sort: false,
-        customBodyRender: (value) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
-          return <span>{capitalizedValue}</span>;
-        },
-      },
-    },
+    // {
+    //   name: "feedback",
+    //   label: "FEEDBACK",
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //     customBodyRender: (value) => {
+    //       const capitalizedValue =
+    //         value.charAt(0).toUpperCase() + value.slice(1);
+    //       return <span>{capitalizedValue}</span>;
+    //     },
+    //   },
+    // },
 
-    {
-      name: "remark",
-      label: "REMARK",
-      options: {
-        filter: true,
-        sort: false,
-        customBodyRender: (value) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
-          return <span>{capitalizedValue}</span>;
-        },
-      },
-    },
-    {
-      name: "interview_mode",
-      label: "INTERVIEW_MODE",
-      options: {
-        filter: true,
-        sort: false,
-        customBodyRender: (value) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
-          return <span>{capitalizedValue}</span>;
-        },
-      },
-    },
+    // {
+    //   name: "remark",
+    //   label: "REMARK",
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //     customBodyRender: (value) => {
+    //       const capitalizedValue =
+    //         value.charAt(0).toUpperCase() + value.slice(1);
+    //       return <span>{capitalizedValue}</span>;
+    //     },
+    //   },
+    // },
+    // {
+    //   name: "interview_mode",
+    //   label: "INTERVIEW_MODE",
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //     customBodyRender: (value) => {
+    //       const capitalizedValue =
+    //         value.charAt(0).toUpperCase() + value.slice(1);
+    //       return <span>{capitalizedValue}</span>;
+    //     },
+    //   },
+    // },
     {
       name: "date",
       label: "DATE",
@@ -140,30 +193,59 @@ const MUItable = () => {
         // },
       },
     },
+    // {
+    //   name: "created_at",
+    //   label: "CREATED_AT",
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //     customBodyRender: (value) => {
+    //       const capitalizedValue =
+    //         value.charAt(0).toUpperCase() + value.slice(1);
+    //       return <span>{capitalizedValue}</span>;
+    //     },
+    //   },
+    // },
+    // {
+    //   name: "updated_at",
+    //   label: "UPDATED_AT",
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //     customBodyRender: (value) => {
+    //       const capitalizedValue =
+    //         value.charAt(0).toUpperCase() + value.slice(1);
+    //       return <span>{capitalizedValue}</span>;
+    //     },
+    //   },
+    // },
     {
-      name: "created_at",
-      label: "CREATED_AT",
+      name: "action",
+      label: "ACTION",
       options: {
-        filter: true,
-        sort: false,
-        customBodyRender: (value) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
-          return <span>{capitalizedValue}</span>;
-        },
-      },
-    },
-    {
-      name: "updated_at",
-      label: "UPDATED_AT",
-      options: {
-        filter: true,
-        sort: false,
-        customBodyRender: (value) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
-          return <span>{capitalizedValue}</span>;
-        },
+        customBodyRender: (value, tableMeta) => (
+          <>
+            {userRole === "admin" && (
+              <>
+                {/* <EditIcon
+                  style={{ color: "green", cursor: "pointer", marginRight: 10 }}
+                  onClick={() => handleEditClick(tableMeta.rowData[0])}
+                  /> */}
+
+                <DeleteIcon
+                  style={{
+                    color: "red",
+                    cursor: "pointer",
+                    marginLeft: "20px",
+                  }}
+                  onClick={(event) =>
+                    deleteInterview(event, tableMeta.rowData[0])
+                  }
+                />
+              </>
+            )}
+          </>
+        ),
       },
     },
   ];
@@ -181,26 +263,26 @@ const MUItable = () => {
   const handlechipDelete = () => {
     debugger;
   };
-  useEffect(()=>{
-    console.log(process.env.REACT_APP_BASE_URL)
-  })
+  useEffect(() => {
+    console.log(process.env.REACT_APP_BASE_URL);
+  });
   const [data, setData] = useState([]);
   const { id } = useParams();
 
-  const fetchData = async () => {
-    let response;
-    if (id === "id") {
-      response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/`
-      );
-    } else {
-      response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/?company_id=${id}`
-      );
-    }
-    setData(response.data);
-    console.log("response :", response.data);
-  };
+  // const fetchData = async () => {
+  //   let response;
+  //   if (id === "id") {
+  //     response = await axios.get(
+  //       `${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/`
+  //     );
+  //   } else {
+  //     response = await axios.get(
+  //       `${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/?company_id=${id}`
+  //     );
+  //   }
+  //   setData(response.data);
+  //   console.log("response :", response.data);
+  // };
 
   // const localId = window.localStorage.getItem("id");
 
@@ -208,15 +290,15 @@ const MUItable = () => {
   //     dispatch(getResponseId(localId))
   // }, [localId]);
 
-  useEffect(()=>{
-    fetchData()
-  })
+  // useEffect(()=>{
+  //   fetchData()
+  // })
 
   return (
     <div>
       <MUIDataTable
         title={"Employee List"}
-        data={data}
+        data={technologyData}
         columns={columns}
         options={options}
         style={{ cursor: "pointer" }}

@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../CSS/Comments.css";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getResponseComment,
+  postResponseComment,
+} from "../Redux/Actions/InterviewActions";
 
 function Comments() {
   const { id } = useParams();
@@ -12,6 +17,28 @@ function Comments() {
     headers: { Authorization: `Barear ${localStorage.getItem("token")}` },
   };
 
+  const dispatch = useDispatch();
+
+  const CommentData = useSelector(
+    (state) => state.InterviewReducer2.CommentData
+  );
+
+  const PostCommentData = useSelector(
+    (state) => state.InterviewReducer2.PostCommentData
+  );
+
+  useEffect(() => {
+    setComments(CommentData);
+    if (CommentData.length > 0) {
+      setUserData(CommentData[0].user);
+    }
+  }, [CommentData]);
+
+  useEffect(() => {
+    setComments((prevComments) => [...prevComments, PostCommentData]);
+    setComment("");
+  },[PostCommentData]);
+
   const onClickHandler = (e) => {
     e.preventDefault();
     let userData = {
@@ -20,37 +47,38 @@ function Comments() {
       parent_comment: null,
       user: null,
     };
-    axios
-      .post(
-        `${process.env.REACT_APP_BASE_URL}/interview_tracking/comment/${id}/`,
-        userData
-      )
-      .then((response) => {
-        debugger;
-        setComments((prevComments) => [...prevComments, response.data]);
-        setComment("");
-        fetchComments();
-      })
-      .catch((error) => {
-        console.error("Error posting comment:", error);
-      });
+    // axios
+    //   .post(
+    //     `${process.env.REACT_APP_BASE_URL}/interview_tracking/comment/${id}/`,
+    //     userData
+    //   )
+    //   .then((response) => {
+    // setComments((prevComments) => [...prevComments, response.data]);
+    // setComment("");
+    //     dispatch(getResponseComment(id));
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error posting comment:", error);
+    //   });
+    dispatch(postResponseComment(id, userData));
   };
 
-  const fetchComments = () => {
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/interview_tracking/comment/${id}/`)
-      .then((response) => {
-        setComments(response.data);
-        if (response.data.length > 0) {
-          setUserData(response.data[0].user);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching comments:", error);
-      });
-  };
+  // const fetchComments = () => {
+  //   // axios
+  //   //   .get(`${process.env.REACT_APP_BASE_URL}/interview_tracking/comment/${id}/`)
+  //   //   .then((response) => {
+  //   //     setComments(response.data);
+  //   //     if (response.data.length > 0) {
+  //   //       setUserData(response.data[0].user);
+  //   //     }
+  //   //   })
+  //   //   .catch((error) => {
+  //   //     console.error("Error fetching comments:", error);
+  //   //   });
+
+  // };
   useEffect(() => {
-    fetchComments();
+    dispatch(getResponseComment(id));
   }, []);
 
   const onChangeHandler = (e) => {
@@ -59,25 +87,32 @@ function Comments() {
 
   return (
     <div className="main-container">
-      <div style={{textAlign:"center",width:"300px",height:"auto",padding:"10px 20px",marginLeft:"500px"}}>
-      {comments.map((text, index) => (
-        <div key={index} className="comment-container">
-          {userData && (
-            <img
-              src={userData.profile_picture_url}
-              alt="User Profile"
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                marginRight: "10px",
-              }}
-            />
-          )}
-          <strong>{userData && userData.username}</strong> {text.comment}😊
-        </div>
-      ))}
-
+      <div
+        style={{
+          textAlign: "center",
+          width: "300px",
+          height: "auto",
+          padding: "10px 20px",
+          marginLeft: "500px",
+        }}
+      >
+        {comments.map((text, index) => (
+          <div key={index} className="comment-container">
+            {userData && (
+              <img
+                src={userData.profile_picture_url}
+                alt="User Profile"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  marginRight: "10px",
+                }}
+              />
+            )}
+            <strong>{userData && userData.username}</strong> {text.comment}😊
+          </div>
+        ))}
       </div>
 
       <div className="comment-flexbox">
@@ -100,15 +135,13 @@ function Comments() {
           <span role="img" aria-label="grinning">
             😄
           </span>
-          
         </div>
         <br />
         <div>
-          <button
-            onClick={onClickHandler}
-            className="comment-button button-15"
-
-          > Submit </button>
+          <button onClick={onClickHandler} className="comment-button button-15">
+            {" "}
+            Submit{" "}
+          </button>
         </div>
         <br />
         <br />

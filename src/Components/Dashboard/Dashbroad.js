@@ -1,11 +1,11 @@
 import React from "react";
-import Apexchart from "./Apexchart";
 import Donutchart from "../Donutchart";
 import Cardss from "./Cardss";
+import ApexChart from "./Apexchart";
 
 const Dashbroad = () => {
   return (
-    <>
+    <div className="container">
       <div className="row">
         <div className="col-lg-12">
           <Cardss />
@@ -14,7 +14,7 @@ const Dashbroad = () => {
       <div style={{ marginTop: "30px", marginLeft: "100px" }}>
         <div className="row">
           <div className="col-lg-6" style={{ marginTop: "100px" }}>
-            <Apexchart />
+            <ApexChart />
           </div>
           <div className="col-lg-6" style={{ marginTop: "100px" }}>
             <Donutchart />
@@ -24,13 +24,15 @@ const Dashbroad = () => {
       <div style={{ marginTop: "30px", marginLeft: "100px" }}>
         <div className="row">
           <div className="col-lg-6" style={{ marginTop: "100px" }}>
-          </div>
-          <div className="col-lg-6" style={{ marginTop: "100px" }}>
             <Donutchart />
           </div>
+          <div className="col-lg-6" style={{ marginTop: "100px" }}>
+            <ApexChart />
+          </div>
+          
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

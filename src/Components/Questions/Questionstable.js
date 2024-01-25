@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+// import EditIcon from "@mui/icons-material/Edit";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
@@ -15,8 +15,9 @@ import {
   getResponseQuestions,
   getResponseCompany,
   getResponseTechnology,
+  deleteResponseQuestions,
 } from "../Redux/Actions/InterviewActions";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 const MUItable = () => {
   const dispatch = useDispatch();
   const [rows, setRows] = React.useState([]);
@@ -27,8 +28,8 @@ const MUItable = () => {
   const [dataPostState, setDataPostState] = useState(false);
   const [selectedTechnology, setSelectedTechnology] = React.useState("");
   const [questions, setQuestions] = React.useState([]);
-  const [selectedQuestionId, setSelectedQuestionId] = useState(null)
-  const navigate = useNavigate();
+  // const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+  // const navigate = useNavigate();
   const questionsData = useSelector(
     (state) => state.InterviewReducer2.QuestionsData
   );
@@ -39,6 +40,8 @@ const MUItable = () => {
   const InterviewData = useSelector(
     (state) => state.InterviewReducer2.InterviewData
   );
+
+  // const DeleteQuestionsData=useSelector((state)=>state.InterviewReducer2.DeleteQuestionsData)
 
   useEffect(() => {
     setCompanies(CompanyData == null ? [] : CompanyData);
@@ -149,9 +152,13 @@ const MUItable = () => {
                   style={{ color: "green", cursor: "pointer", marginRight: 10 }}
                   onClick={() => handleEditClick(tableMeta.rowData[0])}
                   /> */}
-                
+
                 <DeleteIcon
-                  style={{ color: "red", cursor: "pointer" ,marginLeft:"20px"}}
+                  style={{
+                    color: "red",
+                    cursor: "pointer",
+                    marginLeft: "20px",
+                  }}
                   onClick={(event) =>
                     deleteQuestions(event, tableMeta.rowData[0])
                   }
@@ -163,49 +170,51 @@ const MUItable = () => {
       },
     },
   ];
-  const handleEditClick = (questionId) => {
-    setSelectedQuestionId(questionId);
-    // You can redirect to the update page or show a modal for updating
-    // For simplicity, I'm calling the fetchData function here
-    // fetchData();
-  };
+  // const handleEditClick = (questionId) => {
+  //   setSelectedQuestionId(questionId);
+  // };
 
   const deleteQuestions = (event, questionId) => {
+    // debugger
     event.stopPropagation();
-  
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'You won\'t be able to revert this!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios.delete(`${process.env.REACT_APP_BASE_URL}/interview_tracking/questions/${questionId}/`)
-          .then((response) => {
-            console.log('Delete successful:', response);
-            dispatch(getResponseTechnology(id));
-            Swal.fire({
-              icon: 'success',
-              title: '  deleted successfully!',
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          })
-          .catch((error) => {
-            console.error('Error deleting Interview:', error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'Something went wrong while deleting the Interview!',
-            });
-          });
-      }
-    });
+
+    // Swal.fire({
+    //   title: "Are you sure?",
+    //   text: "You won't be able to revert this!",
+    //   icon: "warning",
+    //   showCancelButton: true,
+    //   confirmButtonColor: "#d33",
+    //   cancelButtonColor: "#3085d6",
+    //   confirmButtonText: "Yes, delete it!",
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     axios
+    //       .delete(
+    //         `${process.env.REACT_APP_BASE_URL}/interview_tracking/question/${questionId}/`
+    //       )
+    //       .then((response) => {
+    //         console.log("Delete successful:", response);
+    //         dispatch(getResponseQuestions(id,selectedCompany,selectedTechnology));
+    //         Swal.fire({
+    //           icon: "success",
+    //           title: "  deleted successfully!",
+    //           showConfirmButton: false,
+    //           timer: 1500,
+    //         });
+    //       })
+    //       .catch((error) => {
+    //         console.error("Error deleting Interview:", error);
+    //         Swal.fire({
+    //           icon: "error",
+    //           title: "Oops...",
+    //           text: "Something went wrong while deleting the Interview!",
+    //         });
+    //       });
+    //   }
+    // });
+    dispatch(deleteResponseQuestions(id,selectedCompany,selectedTechnology,questionId))
   };
-  
+
   // const confirmDelete = () => {
   //   Swal.fire({
   //     title: 'Are you sure?',
@@ -234,7 +243,13 @@ const MUItable = () => {
   const handleChangeCompany = (event) => {
     setSelectedCompany(event.target.value);
     setSelectedTechnology("");
-    dispatch(getResponseQuestions(event.target.value, event.target.value, selectedTechnology));
+    dispatch(
+      getResponseQuestions(
+        event.target.value,
+        event.target.value,
+        selectedTechnology
+      )
+    );
   };
   function createData(id, question, type, company, answer) {
     return { id, question, type, company, answer };
@@ -252,7 +267,13 @@ const MUItable = () => {
   // };
   const handleChangeTecchnology = (event) => {
     setSelectedTechnology(event.target.value);
-    dispatch(getResponseQuestions(event.target.value, selectedCompany, event.target.value));
+    dispatch(
+      getResponseQuestions(
+        event.target.value,
+        selectedCompany,
+        event.target.value
+      )
+    );
   };
 
   // const fetchCompanies = async () => {
@@ -264,7 +285,7 @@ const MUItable = () => {
   //   // } catch (error) {
   //   //   console.error("Error fetching companies:", error);
   //   // }
-    // dispatch(/getResponseQuestions1(id, selectedCompany));
+  // dispatch(/getResponseQuestions1(id, selectedCompany));
   // };
 
   useEffect(() => {
@@ -278,9 +299,8 @@ const MUItable = () => {
           company: item.company,
         }))
       );
-    }
-    else{
-      setQuestions(questionsData)
+    } else {
+      setQuestions(questionsData);
     }
   }, [questionsData]);
 
@@ -398,6 +418,27 @@ const MUItable = () => {
             Add Questions
           </Button>
         </Link>
+      
+      </FormControl>
+
+      <FormControl
+        sx={{ m: 1, minWidth: 150 }}
+        size="small"
+        style={{ marginTop: "30px", marginLeft: "50px" }}
+      >
+        {/* <Modals DataPostFun = {DataPost} dataPostState={dataPostState}/> */}
+
+        <Link to="/questions/id ">
+          <Button
+            variant="outlined"
+            style={{ color: "black", outline: "black", borderColor: "gray" }}
+            DataPostFun={DataPost}
+            dataPostState={dataPostState}
+          >
+            Frequently Questions
+          </Button>
+        </Link>
+      
       </FormControl>
 
       <MUIDataTable

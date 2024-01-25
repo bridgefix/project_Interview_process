@@ -1,8 +1,8 @@
 import React from "react";
 
 const Cardss = () => {
-  const companyName = "Company ABC";
-  const jobTitle = "Junior Developer";
+  const companyName = "Company Name";
+  const jobTitle = "Senior Developer";
   const technology = "React, Node.js";
   const timeAgo = "2 days ago";
   const applied = 25;

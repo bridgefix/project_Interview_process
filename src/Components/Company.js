@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react";
 import MUIDataTable from "mui-datatables";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import { useDispatch, useSelector } from "react-redux";
-import { getResponseCompany } from "./Redux/Actions/InterviewActions";
-import Swal from "sweetalert2";
+import { deleteResponseCompany, getResponseCompany } from "./Redux/Actions/InterviewActions";
+// import Swal from "sweetalert2";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 
 const Company = () => {
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const { id } = useParams();
   const dispatch = useDispatch();
   const companyData = useSelector(
     (state) => state.InterviewReducer2.CompanyData
   );
+
+  // const DeleteCompanyData=useSelector((state)=>state.InterviewReducer2.DeleteCompanyData)
+  // console.log(DeleteCompanyData)
+  
   useEffect(() => {
     dispatch(getResponseCompany(id));
   }, []);
@@ -26,37 +30,38 @@ const Company = () => {
   const deleteCompany = (event, companyId) => {
     event.stopPropagation();
   
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'You won\'t be able to revert this!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios.delete(`${process.env.REACT_APP_BASE_URL}/interview_tracking/company/${companyId}/`)
-          .then((response) => {
-            console.log('Delete successful:', response);
-            dispatch(getResponseCompany(id));
-            Swal.fire({
-              icon: 'success',
-              title: 'company deleted successfully!',
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          })
-          .catch((error) => {
-            console.error('Error deleting company:', error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'Something went wrong while deleting the company!',
-            });
-          });
-      }
-    });
+    // Swal.fire({
+    //   title: 'Are you sure?',
+    //   text: 'You won\'t be able to revert this!',
+    //   icon: 'warning',
+    //   showCancelButton: true,
+    //   confirmButtonColor: '#d33',
+    //   cancelButtonColor: '#3085d6',
+    //   confirmButtonText: 'Yes, delete it!'
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     axios.delete(`${process.env.REACT_APP_BASE_URL}/interview_tracking/company/${companyId}/`)
+    //       .then((response) => {
+    //         console.log('Delete successful:', response);
+    //         dispatch(getResponseCompany(id));
+    //         Swal.fire({
+    //           icon: 'success',
+    //           title: 'company deleted successfully!',
+    //           showConfirmButton: false,
+    //           timer: 1500,
+    //         });
+    //       })
+    //       .catch((error) => {
+    //         console.error('Error deleting company:', error);
+    //         Swal.fire({
+    //           icon: 'error',
+    //           title: 'Oops...',
+    //           text: 'Something went wrong while deleting the company!',
+    //         });
+    //       });
+    //   }
+    // });
+    dispatch(deleteResponseCompany(id,companyId))
   };
   const columns = [
     {
@@ -175,7 +180,7 @@ const Company = () => {
   }, []);
 
   return (
-    <div>
+    <div className="container mt-5">
       <MUIDataTable
         title={"Employee List"}
         data={companyData}

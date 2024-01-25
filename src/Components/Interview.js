@@ -5,55 +5,63 @@ import Chip from "@mui/material/Chip";
 
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { getResponseInterview } from "./Redux/Actions/InterviewActions";
+import { deleteResponseInterview, getResponseInterview } from "./Redux/Actions/InterviewActions";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 
 const MUItable = () => {
   const dispatch = useDispatch();
   const technologyData = useSelector(
     (state) => state.InterviewReducer2.TechnologyData
   );
+
+  // const DeleteInterviewData = useSelector(
+  //   (state) => state.InterviewReducer2.DeleteInterviewData
+  // );
+
+  // console.log(DeleteInterviewData)
+
   useEffect(() => {
     dispatch(getResponseInterview(id));
   }, []);
 
   const deleteInterview = (event, interviewId) => {
     event.stopPropagation();
-  
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'You won\'t be able to revert this!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios.delete(`${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/${interviewId}/`)
-          .then((response) => {
-            console.log('Delete successful:', response);
-            dispatch(getResponseInterview(id));
-            Swal.fire({
-              icon: 'success',
-              title: 'Interview deleted successfully!',
-              showConfirmButton: false,
-              timer: 1500,
-            });
-          })
-          .catch((error) => {
-            console.error('Error deleting Interview:', error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'Something went wrong while deleting the Interview!',
-            });
-          });
-      }
-    });
+
+    // Swal.fire({
+    //   title: 'Are you sure?',
+    //   text: 'You won\'t be able to revert this!',
+    //   icon: 'warning',
+    //   showCancelButton: true,
+    //   confirmButtonColor: '#d33',
+    //   cancelButtonColor: '#3085d6',
+    //   confirmButtonText: 'Yes, delete it!'
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     axios.delete(`${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/${interviewId}/`)
+    //       .then((response) => {
+    //         console.log('Delete successful:', response);
+    //         dispatch(getResponseInterview(id));
+    //         Swal.fire({
+    //           icon: 'success',
+    //           title: 'Interview deleted successfully!',
+    //           showConfirmButton: false,
+    //           timer: 1500,
+    //         });
+    //       })
+    //       .catch((error) => {
+    //         console.error('Error deleting Interview:', error);
+    //         Swal.fire({
+    //           icon: 'error',
+    //           title: 'Oops...',
+    //           text: 'Something went wrong while deleting the Interview!',
+    //         });
+    //       });
+    //   }
+    // });
+    dispatch(deleteResponseInterview(id, interviewId));
   };
-  
+
   const userRole = "admin";
   const columns = [
     {
@@ -260,13 +268,13 @@ const MUItable = () => {
     },
   };
 
-  const handlechipDelete = () => {
-    debugger;
-  };
+  // const handlechipDelete = () => {
+  //   debugger;
+  // };
   useEffect(() => {
     console.log(process.env.REACT_APP_BASE_URL);
   });
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const { id } = useParams();
 
   // const fetchData = async () => {
@@ -295,7 +303,7 @@ const MUItable = () => {
   // })
 
   return (
-    <div>
+    <div className="container mt-5">
       <MUIDataTable
         title={"Employee List"}
         data={technologyData}

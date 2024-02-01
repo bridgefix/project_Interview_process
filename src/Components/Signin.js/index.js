@@ -33,6 +33,7 @@ const Index = () => {
         .post(`${process.env.REACT_APP_BASE_URL}/login/`, data)
         
         .then((res) => {
+          debugger
           localStorage.setItem("token", res.data.access);
           Navigate("/dashbroad");
         })

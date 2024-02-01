@@ -209,7 +209,7 @@ const Questionsaddd = (props) => {
 
   return (
     <>
-      <div className="container">
+      <div className="container"  style={{ marginTop: "160px", marginLeft: "50px" }}>
         <Box
           component="form"
           sx={{
@@ -365,7 +365,6 @@ const Questionsaddd = (props) => {
                 >
                   {interview.length > 0 &&
                     interview.map((option) => {
-                      debugger
                       return (
                         <MenuItem key={option.id} value={option.id}>
                           {option.company}

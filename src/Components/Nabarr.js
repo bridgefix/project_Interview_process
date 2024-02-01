@@ -1,20 +1,24 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logout from "./Logout";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const Nabarr = () => {
-  const location=useLocation()
+  const location = useLocation();
 
-  
   return (
     <div>
-      {location.pathname !== '/' && (
-        <nav className="navbar navbar-expand-lg  navbar-light bg-body-tertiary">
+      {location.pathname !== "/" && (
+        <nav
+          className="navbar navbar-expand-lg  navbar-light bg-body-tertiary"
+          style={{ paddingTop: "0" ,position: "fixed",
+          width:"100%",zIndex:"2"}}
+        >
           <div
             className="container-fluid"
             style={{
               backgroundColor: "#477DAD",
-              height: "65px",
+              height: "80px",
               color: "white",
             }}
           >
@@ -38,10 +42,14 @@ const Nabarr = () => {
 
               <ul
                 className="navbar-nav me-auto mb-2 mb-lg-0  "
-                style={{ fontSize: "20px", fontWeight: "600" }}
+                style={{ fontSize: "20px" }}
               >
                 <li className="nav-item">
-                  <Link className="nav-link " to="/dashbroad" style={{ color: "white" }}>
+                  <Link
+                    className="nav-link "
+                    to="/dashbroad"
+                    style={{ color: "white" }}
+                  >
                     Dashboard
                   </Link>
                 </li>
@@ -86,10 +94,10 @@ const Nabarr = () => {
 
             <div className="d-flex align-items-center">
               <a className="text-reset me-3" href="#">
-                <i className="fas fa-shopping-cart"></i>
+                {/* <i className="fas fa-shopping-cart"></i> */}
               </a>
 
-              <div className="dropdown">
+              {/* <div className="dropdown">
                 <a
                   data-mdb-dropdown-init
                   className="text-reset me-3 dropdown-toggle hidden-arrow"
@@ -123,17 +131,16 @@ const Nabarr = () => {
                     </a>
                   </li>
                 </ul>
-              </div>
+              </div> */}
 
-              <div className="dropdown">
+              <div>
                 <a
-                  data-mdb-dropdown-init
-                  className="dropdown-toggle d-flex align-items-center hidden-arrow"
-                  href="#"
+                  // data-mdb-dropdown-init
+                  // className="dropdown-toggle d-flex align-items-center hidden-arrow"
+                  // href="#"
                   id="navbarDropdownMenuAvatar"
                   role="button"
                   aria-expanded="false"
-                  
                 >
                   {/* <img
                     src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
@@ -142,11 +149,14 @@ const Nabarr = () => {
                     alt="Black and White Portrait of a Man"
                     loading="lazy"
                     color="white"
+                    style={{backgroundColor:"white",color:"white"}}
                   /> */}
-                  <Logout />
-                 
+                  <AccountCircleIcon />
+
+                  {/* <h6 style={{ color: "white" ,paddingRight:"8px",marginTop:"5px"}}>Test</h6> */}
+                  {/* <Logout /> */}
                 </a>
-                <ul
+                {/* <ul
                   className="dropdown-menu dropdown-menu-end"
                   aria-labelledby="navbarDropdownMenuAvatar"
                 >
@@ -165,8 +175,10 @@ const Nabarr = () => {
                       Logout
                     </a>
                   </li>
-                </ul>
+                </ul> */}
               </div>
+              <Logout />
+              <div></div>
             </div>
           </div>
         </nav>

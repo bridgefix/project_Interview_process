@@ -303,7 +303,7 @@ const MUItable = () => {
   // })
 
   return (
-    <div className="container mt-5">
+    <div className="container" style={{marginTop:"110px"}}>
       <MUIDataTable
         title={"Employee List"}
         data={technologyData}

@@ -346,7 +346,7 @@ const MUItable = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container" style={{ marginTop: "100px", marginLeft: "50px" }}>
       <FormControl
         sx={{ m: 1, minWidth: 120 }}
         size="small"
@@ -441,7 +441,7 @@ const MUItable = () => {
       
       </FormControl>
 
-      <MUIDataTable
+      <MUIDataTable 
         title={"Employee List"}
         data={rows}
         columns={columns}

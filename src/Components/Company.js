@@ -180,7 +180,7 @@ const Company = () => {
   }, []);
 
   return (
-    <div className="container mt-5">
+    <div className="container" style={{ marginTop: "100px", marginLeft: "50px" }}>
       <MUIDataTable
         title={"Employee List"}
         data={companyData}

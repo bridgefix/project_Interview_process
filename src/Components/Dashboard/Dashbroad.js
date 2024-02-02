@@ -1,5 +1,5 @@
 import React from "react";
-import Donutchart from "../Donutchart";
+import Donutchart from "./Donutchart";
 import Cardss from "./Cardss";
 import ApexChart from "./Apexchart";
 
@@ -24,7 +24,7 @@ const Dashbroad = () => {
       <div style={{ marginTop: "30px", marginLeft: "100px" }}>
         <div className="row">
           <div className="col-lg-6" style={{ marginTop: "100px" }}>
-            <Donutchart />
+            {/* <Donutchart /> */}
           </div>
           <div className="col-lg-6" style={{ marginTop: "100px" }}>
             <ApexChart />

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getResponseInterview } from "../Redux/Actions/InterviewActions";
+// import { useDispatch, useSelector } from "react-redux";
+// import { getResponseInterview } from "../Redux/Actions/InterviewActions";
 import { useParams } from "react-router-dom";
 
 const Cardss = () => {
@@ -12,8 +12,9 @@ const Cardss = () => {
       .get("https://api.bridgefix.co/api/interview_tracking/interview/")
       .then((response) => {
         const today = new Date();
+        today.setHours(0, 0, 0, 0);
         const upcomingInterviewsData = response.data.filter(
-          (interview) => new Date(interview.date) > today
+          (interview) => new Date(interview.date) >= today
         );
         setUpcomingInterviews(upcomingInterviewsData);
       })
@@ -24,7 +25,7 @@ const Cardss = () => {
 
   useEffect(() => {
     getCards();
-  });
+  }, []);
 
   return (
     <div style={{ marginTop: "30px", marginLeft: "50px" }}>
@@ -42,7 +43,7 @@ const Cardss = () => {
                         </div>
                         <div className="ms-2 c-details">
                           <h6 className="mb-0">
-                            <span style={{ marginLeft: "40px" }}>
+                            <span>
                               <b>UpComingInterviews</b>
                             </span>
                             <br />

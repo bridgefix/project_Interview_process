@@ -303,6 +303,7 @@ const Questionsaddd = (props) => {
                   id="demo-simple-select-filled"
                   value={selectCompany}
                   onChange={(e) => setSelectCompany(e.target.value)}
+                  
                 >
                   {company.length > 0 &&
                     company.map((option) => (

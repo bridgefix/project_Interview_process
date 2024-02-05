@@ -88,11 +88,15 @@ const MUItable = () => {
         filter: true,
         sort: false,
         customBodyRender: (value) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
-          const color = value.toLowerCase() === "pass" ? "green" : "red";
-          return <span style={{ color }}>{capitalizedValue}</span>;
+          if (value) {
+            const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1);
+            const color = value.toLowerCase() === "pass" ? "green" : "red";
+            return <span style={{ color }}>{capitalizedValue}</span>;
+          } else {
+            return null; // or provide a default value or handle the null case appropriately
+          }
         },
+        
       },
     },
 
@@ -103,7 +107,6 @@ const MUItable = () => {
         filter: true,
         sort: false,
         customBodyRender: (value) => {
-          // Check if value is not null or undefined before accessing 'charAt'
           const capitalizedValue = value ? value.toUpperCase() : "";
           return <span>{capitalizedValue}</span>;
         },

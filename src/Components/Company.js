@@ -5,10 +5,12 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteResponseCompany, getResponseCompany } from "./Redux/Actions/InterviewActions";
+import {
+  deleteResponseCompany,
+  getResponseCompany,
+} from "./Redux/Actions/InterviewActions";
 // import Swal from "sweetalert2";
 import DeleteIcon from "@mui/icons-material/Delete";
-
 
 const Company = () => {
   // const [data, setData] = useState([]);
@@ -20,16 +22,16 @@ const Company = () => {
 
   // const DeleteCompanyData=useSelector((state)=>state.InterviewReducer2.DeleteCompanyData)
   // console.log(DeleteCompanyData)
-  
+
   useEffect(() => {
     dispatch(getResponseCompany(id));
   }, []);
 
   const userRole = "admin";
-  
+
   const deleteCompany = (event, companyId) => {
     event.stopPropagation();
-  
+
     // Swal.fire({
     //   title: 'Are you sure?',
     //   text: 'You won\'t be able to revert this!',
@@ -61,7 +63,7 @@ const Company = () => {
     //       });
     //   }
     // });
-    dispatch(deleteResponseCompany(id,companyId))
+    dispatch(deleteResponseCompany(id, companyId));
   };
   const columns = [
     {
@@ -91,18 +93,23 @@ const Company = () => {
         filter: true,
         sort: false,
         customBodyRender: (value, tableMeta) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
-          const companyId = companyData[tableMeta.rowIndex].id;
-          return (
-            <Link
-              to={`/interview/${companyId}`}
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <span>{capitalizedValue}</span>
-            </Link>
-          );
+          if (value) {
+            const capitalizedValue = value ? value.charAt(0).toUpperCase() + value.slice(1) : "";
+
+            const companyId = companyData[tableMeta.rowIndex].id;
+            return (
+              <Link
+                to={`/interview/${companyId}`}
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <span>{capitalizedValue}</span>
+              </Link>
+            );
+          } else {
+            return null;
+          }
         },
+     
       },
     },
     {
@@ -112,9 +119,15 @@ const Company = () => {
         filter: true,
         sort: false,
         customBodyRender: (value) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
-          return <span>{capitalizedValue}</span>;
+          if(value){
+
+            const capitalizedValue = value ? value.charAt(0).toUpperCase() + value.slice(1) : "";
+
+            return <span>{capitalizedValue}</span>;
+          }
+          else{
+            return null;
+          }
         },
       },
     },
@@ -125,8 +138,8 @@ const Company = () => {
         filter: true,
         sort: false,
         customBodyRender: (value) => {
-          const capitalizedValue =
-            value.charAt(0).toUpperCase() + value.slice(1);
+          const capitalizedValue = value ? value.charAt(0).toUpperCase() + value.slice(1) : "";
+
           return <span>{capitalizedValue}</span>;
         },
       },
@@ -143,9 +156,13 @@ const Company = () => {
                   style={{ color: "green", cursor: "pointer", marginRight: 10 }}
                   onClick={() => handleEditClick(tableMeta.rowData[0])}
                   /> */}
-                
+
                 <DeleteIcon
-                  style={{ color: "red", cursor: "pointer" ,marginLeft:"20px"}}
+                  style={{
+                    color: "red",
+                    cursor: "pointer",
+                    marginLeft: "20px",
+                  }}
                   onClick={(event) =>
                     deleteCompany(event, tableMeta.rowData[0])
                   }
@@ -180,7 +197,10 @@ const Company = () => {
   }, []);
 
   return (
-    <div className="container" style={{ marginTop: "100px", marginLeft: "50px" }}>
+    <div
+      className="container"
+      style={{ marginTop: "100px", marginLeft: "50px" }}
+    >
       <MUIDataTable
         title={"Employee List"}
         data={companyData}

@@ -23,7 +23,7 @@ class Donutchart extends React.Component {
             },
           },
         },
-        colors: ["#2962ff", "#ffc107","#61dbfb"],
+        colors: ["#2962ff", "#ffc107", "#61dbfb"],
         responsive: [
           {
             breakpoint: 480,
@@ -42,11 +42,13 @@ class Donutchart extends React.Component {
 
     this.loadData();
   }
+;
 
   async loadData() {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/interview_tracking/dashbord/"
+        // "http://127.0.0.1:8000/api/interview_tracking/dashbord/"
+        `${process.env.REACT_APP_BASE_URL}/interview_tracking/dashboard/`
       );
       const data = response.data;
       const labels = data.question_count.map((item) => item.technology__name);

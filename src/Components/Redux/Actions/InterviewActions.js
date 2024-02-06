@@ -432,6 +432,7 @@ export const getResponseQuestions = (
   selectedCompany,
   selectedTechnology
 ) => {
+  debugger
   return async (dispatch) => {
     try {
       let response;

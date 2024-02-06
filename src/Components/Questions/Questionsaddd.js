@@ -25,7 +25,7 @@ const Questionsaddd = (props) => {
   const [answer, setAnswer] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
   const [company, setCompany] = useState([]);
-  const [selectCompany, setSelectCompany] = useState("");
+  const [selectCompany, setSelectCompany] = useState([]);
   const [interview, setInterview] = useState([]);
   const [selectInterview, setSelectInterview] = useState([]);
   const [technology, setTechnology] = useState([]);
@@ -89,7 +89,7 @@ const Questionsaddd = (props) => {
       company: selectCompany,
       // interview: [parseInt(selectCompany)],
       interview: selectInterview,
-      technology: [parseInt(selectTechnology)],
+      technology: [selectTechnology],
     };
 
     const DataPost = async (payload) => {
@@ -209,7 +209,10 @@ const Questionsaddd = (props) => {
 
   return (
     <>
-      <div className="container"  style={{ marginTop: "160px", marginLeft: "50px" }}>
+      <div
+        className="container"
+        style={{ marginTop: "160px", marginLeft: "50px" }}
+      >
         <Box
           component="form"
           sx={{
@@ -287,7 +290,7 @@ const Questionsaddd = (props) => {
                 </Select>
               </FormControl>
             </div>
-            <div className="col-lg-6">
+            {/* <div className="col-lg-6">
               <FormControl
                 variant="filled"
                 sx={{ m: 1, minWidth: 480, marginLeft: "20px" }}
@@ -302,7 +305,10 @@ const Questionsaddd = (props) => {
                   labelId="demo-simple-select-filled-label"
                   id="demo-simple-select-filled"
                   value={selectCompany}
+                  name={selectCompany}
+                
                   onChange={(e) => setSelectCompany(e.target.value)}
+                  multiple
                   
                 >
                   {company.length > 0 &&
@@ -311,6 +317,39 @@ const Questionsaddd = (props) => {
                         {option.name}
                       </MenuItem>
                     ))}
+                </Select>
+              </FormControl>
+            </div> */}
+            <div className="col-lg-6">
+              <FormControl
+                variant="filled"
+                sx={{ m: 1, minWidth: 480, marginLeft: "20px" }}
+              >
+                <InputLabel
+                  id="demo-simple-select-filled-label"
+                  style={{ color: "black" }}
+                >
+                  Select company
+                </InputLabel>
+                <Select
+                  multiple
+                  labelId="demo-simple-select-filled-label"
+                  id="demo-simple-select-filled"
+                  value={selectCompany}
+                  name={selectCompany}
+                  onChange={(e) => {
+                    debugger;
+                    setSelectCompany(e.target.value);
+                  }}
+                >
+                  {company.length > 0 &&
+                    company.map((option) => {
+                      return (
+                        <MenuItem key={option.id} value={option.id}>
+                          {option.name}
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
               </FormControl>
             </div>

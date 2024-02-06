@@ -43,11 +43,16 @@ function Apexchart() {
       },
     },
   });
+  
+  const config = {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  };
 
   const finalresult = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/interview_tracking/dashbord/"
+       `${process.env.REACT_APP_BASE_URL}/interview_tracking/dashboard/`,config
+        
       );
       const data = response.data;
       console.log("data is:-", data);
@@ -55,7 +60,7 @@ function Apexchart() {
         (item) => item.pass_percentage
       );
       const failData = data.result_percentage?.map(
-        (item) => item.fail_percentage
+        (item) => item.fail_percentag
       );
 
       setChartData((prevChartData) => {

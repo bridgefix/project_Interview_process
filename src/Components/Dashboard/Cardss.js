@@ -6,10 +6,13 @@ import { useParams } from "react-router-dom";
 
 const Cardss = () => {
   const [upcomingInterviews, setUpcomingInterviews] = useState([]);
+  const config = {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  };
 
   const getCards = () => {
     axios
-      .get("https://api.bridgefix.co/api/interview_tracking/interview/")
+      .get(`${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/`,config)
       .then((response) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);

@@ -3,6 +3,7 @@ import Donutchart from "./Donutchart";
 import Cardss from "./Cardss";
 import ApexChart from "./Apexchart";
 import UpcomingInterviews from "./UpcomingInterviews";
+import Apexchart1 from "./Apexchart1";
 
 const Dashbroad = () => {
   return (
@@ -31,7 +32,7 @@ const Dashbroad = () => {
             {/* <Donutchart /> */}
           </div>
           <div className="col-lg-6" style={{ marginTop: "100px" }}>
-            {/* <ApexChart /> */}
+            <Apexchart1/>
           </div>
           
         </div>

@@ -8,7 +8,9 @@ import LanguageIcon from "@mui/icons-material/Language";
 import img from "../Images/business-man-in-a-suit-working-on-laptop-vector-16226678-removebg-preview.png";
 import axios from "axios";
 // import img1 from '../Images/Screenshot_2024-02-05_125219-removebg-preview.png'/
-
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import "../../CSS/Upcoming.css";
 const UpcomingInterviews = () => {
   const [upcomingInterviews, setUpcomingInterviews] = useState([]);
   const config = {
@@ -16,7 +18,10 @@ const UpcomingInterviews = () => {
   };
   const getCards = () => {
     axios
-      .get(`${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/`,config)
+      .get(
+        `${process.env.REACT_APP_BASE_URL}/interview_tracking/interview/`,
+        config
+      )
       .then((response) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -37,110 +42,237 @@ const UpcomingInterviews = () => {
   return (
     <div className="container" style={{ marginTop: "60px" }}>
       <div className="row">
-        <h4 style={{display:"flex",justifyContent:"center"}}><span style={{color:"#51585e"}}>UPCOMING INTERVIEWS</span></h4><hr/>
-        
-        {upcomingInterviews.map((interview, index) => (
-          <React.Fragment key={index}>
-            <div className="col-lg-4">
-              <img
-                src={img}
-                alt="Businessman working on a laptop"
-                height="350px"
-                width="auto"
-              />
-            </div>
-            <div
-              className="col-lg-8"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <div>
-                <AutorenewIcon
-                  style={{
-                    width: "100px",
-                    height: "45px",
-                    paddingLeft: "40px",
-                    marginTop: "20px",
-                    marginLeft: "-125px",
-                    color: "#51585e",
-                  }}
-                />
-                Round:-{interview.interview_round}
-              </div>
-              <div>
-                <ScheduleIcon
-                  style={{
-                    width: "100px",
-                    height: "45px",
-                    marginLeft: "-50px",
-                    color: "coral",
-                  }}
-                />
-                Date:-{interview.date}
-              </div>
-              <div>
-                <AccountCircleIcon
-                  style={{
-                    width: "100px",
-                    height: "45px",
-                    marginLeft: "-12px",
-                    color: "#ffc107",
-                  }}
-                />
-                Actual_interview:-{interview.actual_interviewee}
-              </div>
-              <div>
-                <AccountBoxIcon
-                  style={{
-                    width: "100px",
-                    height: "45px",
-                    marginLeft: "-12px",
-                    color: "cadetblue",
-                  }}
-                />
-                Interview:-{interview.interviewee}
-              </div>
-              <div>
-                <InterpreterModeIcon
-                  style={{
-                    width: "100px",
-                    height: "45px",
-                    marginLeft: "-50px",
-                    color: -"#dc1f29",
-                  }}
-                />
-                Scheduled by:-{interview.sheduled_by}
-              </div>
-              <div>
-                <LanguageIcon
-                  style={{
-                    width: "100px",
-                    height: "45px",
-                    marginLeft: "-92px",
-                    color: "#5f78a0",
-                  }}
-                />
-                Technologies:{" "}
-                {interview.technology.map((tech, i) => (
-                  <span key={i}>
-                    {tech}
-                    {i < interview.technology.length - 1 ? ", " : ""}
-                  </span>
+        <h4 style={{ display: "flex", justifyContent: "center" }}>
+          <span style={{ color: "#51585e" }}>UPCOMING INTERVIEWS</span>
+        </h4>
+        <hr />
+        {upcomingInterviews.length > 3 ? (
+          <article>
+            <div>
+              <ul>
+                {upcomingInterviews.map((interview, index) => (
+                  <React.Fragment key={index}>
+                    <li>
+                      <img
+                        src={img}
+                        alt="Businessman working on a laptop"
+                        // width="400px"
+                        // height="350px"
+
+                        style={{
+                          width: "200px",
+                          height: "200px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignContent: "center",
+                        }}
+                      />
+                      <div className="row ">
+                        {/* <div className="col-lg-12   col-sm-3 blockimg"></div> */}
+                        <div className="col-lg-12  col-sm-9">
+                          <div>
+                            <AutorenewIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: "#51585e",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Round :- {interview.interview_round}
+                            </span>
+                          </div>
+                          <div>
+                            <ScheduleIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: "coral",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Date :- {interview.date}
+                            </span>
+                          </div>
+                          <div>
+                            <AccountCircleIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: "#ffc107",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Actual_interview:- {interview.actual_interviewee}
+                            </span>
+                          </div>
+                          <div>
+                            <AccountBoxIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: "cadetblue",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Interview:- {interview.interviewee}
+                            </span>
+                          </div>
+                          <div>
+                            <InterpreterModeIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: -"#dc1f29",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Scheduled by:- {interview.sheduled_by}
+                            </span>
+                          </div>
+                          <div>
+                            <LanguageIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: "#5f78a0",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Technologies:-{" "}
+                              {interview.technology.map((tech, i) => (
+                                <span key={i}>
+                                  {tech}
+                                  {i < interview.technology.length - 1
+                                    ? ", "
+                                    : ""}
+                                </span>
+                              ))}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </React.Fragment>
                 ))}
-              </div>
+              </ul>
             </div>
-            <br />
-            <br />
-            <br />
-            <hr />
-            <br />
-            <br />
-          </React.Fragment>
-        ))}
+          </article>
+        ) : (
+          <div className="mainCard">
+            <div className="ul" style={{display:"flex"}}>
+              {/* <ul > */}
+                {upcomingInterviews.map((interview, index) => (
+                  <React.Fragment key={index}>
+                    <div className="li" style={{padding:"20px"}}>
+                      <img
+                        src={img}
+                        alt="Businessman working on a laptop"
+                        // width="400px"
+                        // height="350px"
+
+                        style={{
+                          width: "200px",
+                          height: "200px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignContent: "center",
+                        }}
+                      />
+                      <div className="row ">
+                        {/* <div className="col-lg-12   col-sm-3 blockimg"></div> */}
+                        <div className="col-lg-12  col-sm-9">
+                          <div>
+                            <AutorenewIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: "#51585e",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Round :- {interview.interview_round}
+                            </span>
+                          </div>
+                          <div>
+                            <ScheduleIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: "coral",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Date :- {interview.date}
+                            </span>
+                          </div>
+                          <div>
+                            <AccountCircleIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: "#ffc107",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Actual_interview:- {interview.actual_interviewee}
+                            </span>
+                          </div>
+                          <div>
+                            <AccountBoxIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: "cadetblue",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Interview:- {interview.interviewee}
+                            </span>
+                          </div>
+                          <div>
+                            <InterpreterModeIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: -"#dc1f29",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Scheduled by:- {interview.sheduled_by}
+                            </span>
+                          </div>
+                          <div>
+                            <LanguageIcon
+                              style={{
+                                // width: "100px",
+                                // height: "45px",
+                                color: "#5f78a0",
+                              }}
+                            />
+                            <span style={{ paddingLeft: "10px" }}>
+                              Technologies:-{" "}
+                              {interview.technology.map((tech, i) => (
+                                <span key={i}>
+                                  {tech}
+                                  {i < interview.technology.length - 1
+                                    ? ", "
+                                    : ""}
+                                </span>
+                              ))}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </React.Fragment>
+                ))}
+              {/* </ul> */}
+            </div>
+          </div>
+        )}
       </div>
+      <div className="row"></div>
     </div>
   );
 };

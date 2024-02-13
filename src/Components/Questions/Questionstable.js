@@ -59,11 +59,12 @@ const MUItable = () => {
     dispatch(getResponseTechnology());
   }, []);
 
-  // console.log("questionsData2 :", questionsData2);
+  useEffect(() => {
+    dispatch(getResponseQuestions(id, selectedCompany, selectedTechnology));
+  }, []);
 
-  // useEffect(()=>{
-  //   dispatch(getResponseQuestions1(id, selectedCompany));
-  // })
+  console.log("CompanyData : ", CompanyData);
+
   const userRole = "admin";
 
   const columns = [
@@ -122,24 +123,23 @@ const MUItable = () => {
         },
       },
     },
-
     {
       name: "company",
       label: "COMPANY",
       options: {
         filter: true,
         sort: false,
-        customBodyRender: (value) => {
-          if (typeof value === "string") {
-            const capitalizedValue =
-              value.charAt(0).toUpperCase() + value.slice(1);
-            return <span>{capitalizedValue}</span>;
-          } else {
-            return <span>Invalid value</span>;
-          }
-        },
+        // customBodyRender: (value) => {
+
+        //   return (
+        //     value && (
+        //       <span>{value.charAt(0).toUpperCase()}</span>
+        //     )
+        //   );
+        // },
       },
     },
+
     {
       name: "action",
       label: "ACTION",
@@ -175,7 +175,7 @@ const MUItable = () => {
   // };
 
   const deleteQuestions = (event, questionId) => {
-    // debugger
+    // bj
     event.stopPropagation();
 
     // Swal.fire({
@@ -212,25 +212,16 @@ const MUItable = () => {
     //       });
     //   }
     // });
-    dispatch(deleteResponseQuestions(id,selectedCompany,selectedTechnology,questionId))
+    dispatch(
+      deleteResponseQuestions(
+        id,
+        selectedCompany,
+        selectedTechnology,
+        questionId
+      )
+    );
   };
 
-  // const confirmDelete = () => {
-  //   Swal.fire({
-  //     title: 'Are you sure?',
-  //     text: 'You won\'t be able to revert this!',
-  //     icon: 'warning',
-  //     showCancelButton: true,
-  //     confirmButtonColor: '#3085d6',
-  //     cancelButtonColor: '#d33',
-  //     confirmButtonText: 'Yes, delete it!'
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       deleteQuestions();
-
-  //     }
-  //   });
-  // };
   const options = {
     filterType: "checkbox",
     onRowClick: (rowData, rowMeta) => {
@@ -255,16 +246,6 @@ const MUItable = () => {
     return { id, question, type, company, answer };
   }
 
-  // const fetchTechnologies = async () => {
-  //   // try {
-  //   // const response = await axios.get(
-  //   //   `${process.env.REACT_APP_BASE_URL}/interview_tracking/technology/`
-  //   // );
-  //   //   setTechnologies(response.data);
-  //   // } catch (error) {
-  //   //   console.error("Error fetching technologies:", error);
-  //   // }
-  // };
   const handleChangeTecchnology = (event) => {
     setSelectedTechnology(event.target.value);
     dispatch(
@@ -276,18 +257,6 @@ const MUItable = () => {
     );
   };
 
-  // const fetchCompanies = async () => {
-  //   // try {
-  //   //   const response = await axios.get(
-  //   //     `${process.env.REACT_APP_BASE_URL}/interview_tracking/company/`
-  //   //   );
-  //   //   setCompanies(response.data);
-  //   // } catch (error) {
-  //   //   console.error("Error fetching companies:", error);
-  //   // }
-  // dispatch(/getResponseQuestions1(id, selectedCompany));
-  // };
-
   useEffect(() => {
     if (questionsData.length > 0) {
       setQuestions(
@@ -296,7 +265,7 @@ const MUItable = () => {
           question: item.title,
           answer: item.answer,
           type: item.difficulty,
-          company: item.company,
+          company: item.company.join(' , '),
         }))
       );
     } else {
@@ -328,10 +297,6 @@ const MUItable = () => {
     // fetchData(selectedCompany, selectedTechnology);
   }, [selectedCompany, selectedTechnology]);
 
-  useEffect(() => {
-    dispatch(getResponseQuestions(id, selectedCompany, selectedTechnology));
-  }, []);
-
   const DataPost = async (payload) => {
     try {
       const response = await axios.post(
@@ -345,8 +310,20 @@ const MUItable = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("CompanyData:", CompanyData);
+    setCompanies(CompanyData == null ? [] : CompanyData);
+  }, [CompanyData]);
+
+  useEffect(() => {
+    dispatch(getResponseCompany(id, selectedCompany));
+  }, []);
+
   return (
-    <div className="container" style={{ marginTop: "100px", marginLeft: "50px" }}>
+    <div
+      className="container"
+      style={{ marginTop: "100px", marginLeft: "50px" }}
+    >
       <FormControl
         sx={{ m: 1, minWidth: 120 }}
         size="small"
@@ -418,7 +395,6 @@ const MUItable = () => {
             Add Questions
           </Button>
         </Link>
-      
       </FormControl>
 
       <FormControl
@@ -438,10 +414,9 @@ const MUItable = () => {
             Frequently Questions
           </Button>
         </Link>
-      
       </FormControl>
 
-      <MUIDataTable 
+      <MUIDataTable
         title={"Employee List"}
         data={rows}
         columns={columns}

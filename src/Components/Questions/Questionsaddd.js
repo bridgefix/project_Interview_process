@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+// import axios from "axios";
+import makeAnimated from 'react-select/animated';
 import {
   getResponseCompany,
   getResponseInterviews,
@@ -248,7 +249,7 @@ const Questionsaddd = (props) => {
                 onChange={(e) => setQuestion(e.target.value)}
               />
             </div>
-
+            
             <div className="col-lg-12">
               <Editor
                 value={answer}
@@ -338,7 +339,6 @@ const Questionsaddd = (props) => {
                   value={selectCompany}
                   name={selectCompany}
                   onChange={(e) => {
-                    debugger;
                     setSelectCompany(e.target.value);
                   }}
                 >
@@ -414,6 +414,7 @@ const Questionsaddd = (props) => {
                 </Select>
               </FormControl>
             </div>
+            
           </div>
           <div></div>
           {/* </div> */}

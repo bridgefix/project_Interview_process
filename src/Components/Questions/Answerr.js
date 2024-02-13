@@ -117,7 +117,7 @@ export default function BasicTable() {
 
   return (
     <>
-      <div className="col-lg-12 container" style={{ background: "white" ,marginTop:"60px"}}>
+      <div className="col-lg-12 container" style={{ background: "white" ,marginTop:"120px"}}>
         <h2 style={{ marginTop: "30px", fontSize: "25px", paddingTop: "30px" }}>
           Questions
         </h2>

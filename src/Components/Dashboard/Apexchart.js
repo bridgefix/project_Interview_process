@@ -39,7 +39,7 @@ function Apexchart() {
         },
       },
       xaxis: {
-        categories: ["manish", "Anand", "Dependra", "monika"],
+        categories: ["Manish", "Anand", "Dependra", "Monika"],
       },
     },
   });

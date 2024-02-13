@@ -432,7 +432,7 @@ export const getResponseQuestions = (
   selectedCompany,
   selectedTechnology
 ) => {
-  debugger
+  // debugger
   return async (dispatch) => {
     try {
       let response;
@@ -489,9 +489,9 @@ export const getResponseQuestions = (
 export const getResponseCompany = () => {
   return (dispatch) => {
     axios
-      .get(
-        `${process.env.REACT_APP_BASE_URL}/interview_tracking/company/`,
-        config
+    .get(
+      `${process.env.REACT_APP_BASE_URL}/interview_tracking/company/`,
+      config
       )
       .then((res) => {
         dispatch(getCompanyResponse(res.data));

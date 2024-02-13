@@ -15,6 +15,7 @@ import Answerr from "./Components/Questions/Answerr.js";
 
 import Signin from "./Components/Signin.js";
 import Questionsaddd from "./Components/Questions/Questionsaddd.js";
+import Frequently_questions from "./Components/Questions/Frequently_questions.js";
 
 const App = () => {
   return (
@@ -29,7 +30,8 @@ const App = () => {
               <Route path="/technology" element={<Technology />} />
               <Route path="/company" element={<Company />} />
               <Route path="/interview/:id" element={<Interview />} />
-              <Route path="/questions/:id" element={<Questionstable />} />/
+              <Route path="/questions/:id" element={<Questionstable />} />
+              <Route path="/frequently/:id" element={<Frequently_questions/>}/>
               <Route path="/answer/:id" element={<Answerr />} />
               <Route path="/questionsadd" element={<Questionsaddd/>}/>
             </Routes>
